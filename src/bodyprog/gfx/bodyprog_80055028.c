@@ -353,6 +353,89 @@ static int RoomIsFlashlightLit(void)
 
     return s_state;
 }
+
+/* The game's own lighter marker: the preset flag that makes Gfx_FlashlightUpdate
+ * draw the flame billboard in Harry's right hand (preset 10, the intro alley).
+ * On PSX the lighter is the flashlight's point light at a weaker strength, lit
+ * from his torso and only towards the front, while the flame burns in his hand. */
+static int Pc_LighterActive(void)
+{
+    return (g_SysWork.field_2388.field_154.effectsInfo_0.field_0.s_field_0.field_0 & (1 << 3)) != 0;
+}
+
+/* Where the flame billboard is drawn (func_8003E740's quad centre before its
+ * jitter), in the same view space as the GTE-captured vertex positions. */
+static void Pc_LighterFlameViewPos(float out[3])
+{
+    MATRIX mat;
+    s32    x = 1;
+    s32    y = -7;
+    s32    z = 33;
+
+    Vw_CoordToViewSpaceMatrix(&g_SysWork.playerBoneCoords[HarryBone_RightHand], &mat);
+    out[0] = (float)(((mat.m[0][0] * x + mat.m[0][1] * y + mat.m[0][2] * z) >> 12) + mat.t[0]);
+    out[1] = (float)(((mat.m[1][0] * x + mat.m[1][1] * y + mat.m[1][2] * z) >> 12) + mat.t[1]);
+    out[2] = (float)(((mat.m[2][0] * x + mat.m[2][1] * y + mat.m[2][2] * z) >> 12) + mat.t[2]);
+}
+
+/* A flame does not burn at a constant level. Own generator rather than
+ * Rng_Rand16: the game RNG drives the recorded demos and must not be advanced
+ * by a PC-only effect. Holds still while the game is paused. */
+static float Pc_LighterFlicker(void)
+{
+    static u32   s_seed   = 0x2545F491u;
+    static float s_level  = 1.0f;
+    static float s_target = 1.0f;
+    static float s_hold   = 0.0f;
+    float        dt       = (float)g_DeltaTime / 4096.0f;
+
+    if (dt <= 0.0f)
+    {
+        return s_level;
+    }
+
+    s_hold -= dt;
+    if (s_hold <= 0.0f)
+    {
+        s_seed   = s_seed * 1664525u + 1013904223u;
+        s_target = 0.8f + 0.25f * (float)(s_seed >> 16) / 65535.0f;
+        s_hold   = 0.04f + 0.08f * (float)((s_seed >> 8) & 0xFF) / 255.0f;
+    }
+
+    s_level += (s_target - s_level) * MIN(1.0f, dt * 20.0f);
+    return s_level;
+}
+
+/* Set while Harry or his held item is being built. The beam starts at his chest
+ * and points away from him, so under replacement he would be lit by nothing;
+ * he keeps the PSX self-light instead and is kept out of the cone. */
+int g_PcFlashlightHolderDraw = 0;
+
+/* The per-pixel beam stands in for the PSX point light (field_0 == 1) exactly
+ * where the PSX would draw one: the same strength (field_54, which already
+ * carries the 0.25s on/off ramp through the preset blend), so geometry built
+ * this frame and the cone pushed at its end agree without any frame latch.
+ * flashlightIntensity keeps the beam through the fade-out. Other light
+ * sources that ride the same point light (scripted lamps) stay on the PSX
+ * path; the lighter is taken over as an omni light (Pc_LighterActive).
+ * Scripted shots stay PSX like before, which also keeps the shadow map from
+ * being sampled where its pre-pass never ran. */
+int Pc_FlashlightReplaceActive(void)
+{
+    extern int g_PsyX_UsePerPixelFlashlight, g_PsyX_FlashlightReplace;
+    extern int Pc_ScriptOwnsShot(void);
+
+    return g_PsyX_UsePerPixelFlashlight && g_PsyX_FlashlightReplace &&
+           g_WorldEnvWork.field_0 == 1 && g_WorldEnvWork.field_54 > 0 &&
+           (g_SysWork.field_2388.isFlashlightOn_15 || g_SysWork.field_2388.flashlightIntensity > 0 ||
+            Pc_LighterActive()) &&
+           !Pc_ScriptOwnsShot();
+}
+
+static u8 Pc_FlashlightAmbientLight(void)
+{
+    return MIN(g_WorldEnvWork.field_20 >> 5, (s32)g_WorldEnvWork.field_3);
+}
 #endif
 
 void Gfx_2dEffectsDraw(void) // 0x800550D0
@@ -417,9 +500,14 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
          * after Kaufmann"), which is a daylit room. On PSX the flashlight never
          * darkened its surroundings, it only added a glow; the fall-through
          * below is that original glow-halo path. */
+        /* Under replacement there is no whole-scene dim to protect, so none of
+         * the gates below matter; the cone simply follows the PSX light. */
+        extern int g_PsyX_FlashlightReplace;
         int roomLit = RoomIsFlashlightLit();
-        int dimOn   = g_PsyX_UsePerPixelFlashlight && g_SysWork.field_2388.isFlashlightOn_15
-                      && !Pc_ScriptOwnsShot() && roomLit;
+        int dimOn   = g_PsyX_FlashlightReplace
+                      ? Pc_FlashlightReplaceActive()
+                      : (g_PsyX_UsePerPixelFlashlight && g_SysWork.field_2388.isFlashlightOn_15
+                         && !Pc_ScriptOwnsShot() && roomLit);
 
         /* Reports every flip of the whole-scene dim, term by term, so a single
          * run names which one is unstable if any still is. */
@@ -439,6 +527,10 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
             s_prevDim = dimOn;
         }
 
+        extern int g_PsyX_FlashlightOmni;
+
+        g_PsyX_FlashlightOmni = dimOn && g_PsyX_FlashlightReplace && Pc_LighterActive();
+
         if (dimOn)
         {
             s32 lx = Q12_TO_Q8(g_WorldEnvWork.field_60.vx);
@@ -452,6 +544,13 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
             g_PsyX_FlashlightPos[0] = (float)vx;
             g_PsyX_FlashlightPos[1] = (float)vy;
             g_PsyX_FlashlightPos[2] = (float)vz;
+
+            /* The lighter's light comes from its flame, not from the torso point
+             * the PSX lights it from. */
+            if (g_PsyX_FlashlightOmni)
+            {
+                Pc_LighterFlameViewPos(g_PsyX_FlashlightPos);
+            }
 
             /* Shadow-map light origin: the PHYSICAL flashlight (chest/hand),
              * snapshotted before the FPS eye-override, pushed to view space the
@@ -483,10 +582,11 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
 
             /* Classic style matches the room-specific RGB matrix used by the
              * original flashlight (so console `fl` tints reach the cone too);
-             * Modern keeps its own warm-white beam character. */
+             * Modern keeps its own warm-white beam character. The lighter takes
+             * the room matrix in both styles: its preset is the flame's orange. */
             {
                 extern int g_PsyX_FlashlightStyle;
-                if (g_PsyX_FlashlightStyle)
+                if (g_PsyX_FlashlightStyle || g_PsyX_FlashlightOmni)
                 {
                     g_PsyX_FlashlightColor[0] = (float)g_WorldEnvWork.field_2C.m[0][0] / 4096.0f;
                     g_PsyX_FlashlightColor[1] = (float)g_WorldEnvWork.field_2C.m[1][0] / 4096.0f;
@@ -497,6 +597,26 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
                     g_PsyX_FlashlightColor[0] = 1.00f;
                     g_PsyX_FlashlightColor[1] = 0.95f;
                     g_PsyX_FlashlightColor[2] = 0.85f;
+                }
+
+                /* The PSX flashlight term scales with field_54 (0.35..2.5 across
+                 * the room presets, times the scripted light intensity) and is
+                 * clamped together with the ambient to field_3. Without the
+                 * dimmed per-vertex copy underneath, the beam has to carry both. */
+                if (g_PsyX_FlashlightReplace)
+                {
+                    extern float g_PsyX_FlashlightCap;
+                    float strength = (float)g_WorldEnvWork.field_54 / 4096.0f;
+
+                    if (g_PsyX_FlashlightOmni)
+                    {
+                        strength *= Pc_LighterFlicker();
+                    }
+
+                    g_PsyX_FlashlightColor[0] *= strength;
+                    g_PsyX_FlashlightColor[1] *= strength;
+                    g_PsyX_FlashlightColor[2] *= strength;
+                    g_PsyX_FlashlightCap = (float)(g_WorldEnvWork.field_3 - Pc_FlashlightAmbientLight()) / 128.0f;
                 }
             }
 
@@ -2363,6 +2483,27 @@ void func_80057658(s_MeshHeader* meshHdr, s32 offset, s_GteScratchData* scratchD
     DVECTOR*  screenPos;
     s_Normal* curNormal;
 
+#ifdef SH_PC_PORT
+    if (Pc_FlashlightReplaceActive())
+    {
+        u8  ambient = Pc_FlashlightAmbientLight();
+        u8* light   = &scratchData->field_2B8[offset];
+
+        for (curNormal = meshHdr->normals; curNormal < &meshHdr->normals[meshHdr->normalCount]; curNormal++)
+        {
+            /* The PSX loop below consumes at least one entry per normal even
+             * when its count is 0; stay in step with the layout it walks. */
+            u8* end = light + MAX(curNormal->count, 1);
+
+            while (light < end)
+            {
+                *light++ = ambient;
+            }
+        }
+        return;
+    }
+#endif
+
     scratchData->field_3AC = *arg4; // 3AC changed to `SVECTOR`.
 
     scratchData->field_380.field_0.m[0][0] = arg3->vx;
@@ -4181,6 +4322,20 @@ void func_8005A478(s_GteScratchData* scratchData, q19_12 alpha) // 0x8005A478
     s32 temp_s0_neg;
     s32 temp_s1_neg;
     s32 temp_s2_neg;
+
+#ifdef SH_PC_PORT
+    /* Exactly the result of the PSX path below at zero light strength: no
+     * directional term and no light-driven back-colour boost. */
+    if (Pc_FlashlightReplaceActive() && !g_PcFlashlightHolderDraw)
+    {
+        gte_SetLightSourceXY(0, 0);
+        gte_SetLightSourceZ(0);
+        SetBackColor(Q12_MULT(g_WorldEnvWork.field_24, alpha),
+                     Q12_MULT(g_WorldEnvWork.field_25, alpha),
+                     Q12_MULT(g_WorldEnvWork.field_26, alpha));
+        return;
+    }
+#endif
 
     ReadGeomOffset(&geomOffsetX, &geomOffsetY);
     geomScreen = ReadGeomScreen();

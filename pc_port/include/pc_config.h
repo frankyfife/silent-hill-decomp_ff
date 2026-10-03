@@ -203,6 +203,9 @@ typedef struct {
                              * derive it the other way (pp+shadows = Modern + Shadows). */
     int perPixelFlashlight; /* DERIVED from flashlightMode (legacy key: per_pixel_flashlight). */
     int flashlightShadows;  /* DERIVED from flashlightMode (legacy key: flashlight_shadows). */
+    int flashlightReplace;  /* per-pixel modes: the beam REPLACES the PSX per-vertex flashlight
+                             * (vertices get ambient only, no whole-scene dim) instead of being
+                             * laid over a dimmed copy of it. 1 = on (config key: flashlight_replace) */
     float fogStrength;          /* distance-fog density scale, 0..2; 1.1 = PSX-matched. Lower to see further (config key: fog_strength) */
     float flashlightIntensity;  /* per-pixel flashlight cone brightness scale, 0..3 (config key: flashlight_intensity) */
     float flashlightSize;       /* per-pixel flashlight cone coverage multiplier, 0..3 (config key: flashlight_size) */

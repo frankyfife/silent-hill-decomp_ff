@@ -1206,8 +1206,11 @@ int main(int argc, char* argv[])
      * The apply helper derives the per-pixel/style/shadow PsyX globals and the
      * per-style intensity/size defaults. */
     {
+        extern int g_PsyX_FlashlightReplace;
         Pc_FlashlightModeApply(g_PcConfig.flashlightMode, 0);
-        SH_LOG("Flashlight mode: %s", Pc_FlashlightModeLabel(g_PcConfig.flashlightMode));
+        g_PsyX_FlashlightReplace = g_PcConfig.flashlightReplace;
+        SH_LOG("Flashlight mode: %s%s", Pc_FlashlightModeLabel(g_PcConfig.flashlightMode),
+               g_PcConfig.flashlightReplace ? " (replaces per-vertex)" : "");
     }
 
     /* Select the backend before applying backend-specific controls. */

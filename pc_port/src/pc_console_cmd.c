@@ -1983,6 +1983,18 @@ void Pc_ConsoleExec(const char* line)
         else if (arg[0] != '\0') { cprintf("usage: flmode <0-3|classic|classicshadows|modern|modernshadows>"); return; }
         Pc_FlashlightModeApply(mode, 1);
         cprintf("Flashlight: %s", Pc_FlashlightModeLabel(g_PcConfig.flashlightMode));
+    } else if (strcmp(cmd, "FLREPLACE") == 0) {
+        /* flreplace 0|1 -- per-pixel modes: 1 = the beam replaces the PSX
+         * per-vertex flashlight, 0 = the older dim-and-overlay. A/B in place. */
+        extern int g_PsyX_FlashlightReplace;
+        if (arg[0] == '1') g_PcConfig.flashlightReplace = 1;
+        else if (arg[0] == '0') g_PcConfig.flashlightReplace = 0;
+        else if (arg[0] == '\0') g_PcConfig.flashlightReplace = !g_PcConfig.flashlightReplace;
+        else { cprintf("usage: flreplace [0|1]"); return; }
+        g_PsyX_FlashlightReplace = g_PcConfig.flashlightReplace;
+        PcConfig_SaveKeyValue("flashlight_replace", g_PcConfig.flashlightReplace ? "1" : "0");
+        cprintf("flashlight replace: %s%s", g_PcConfig.flashlightReplace ? "ON" : "OFF",
+                g_PcConfig.perPixelFlashlight ? "" : " (only affects per-pixel modes, see flmode)");
     } else if (strcmp(cmd, "SHADOWS") == 0) {
         /* Toggles shadows WITHIN the current flashlight mode. Classic + Shadows
          * without shadows is just Classic, so 1<->0 and 3<->2. */

@@ -63,6 +63,7 @@ s_PcConfig g_PcConfig = {
     .flashlightMode = 0, /* 0=Classic (PSX), 1=Classic+Shadows, 2=Modern, 3=Modern+Shadows */
     .perPixelFlashlight = 0, /* DERIVED from flashlightMode */
     .flashlightShadows  = 1, /* per-pixel flashlight casts real-time shadows (on by default; only visible when perPixelFlashlight is on) */
+    .flashlightReplace  = 1, /* per-pixel beam replaces the PSX per-vertex flashlight instead of dimming over it */
     .fogStrength          = 1.10f, /* PSX-matched density; lower reveals more of the widened draw distance */
     .flashlightIntensity  = 1.20f, /* per-pixel flashlight cone brightness scale, 0..3 */
     .flashlightSize       = 3.00f, /* per-pixel flashlight cone coverage multiplier */
@@ -768,6 +769,10 @@ void PcConfig_Load(const char* path)
         else if (strcmp(key, "flashlight_shadows") == 0)
         {
             g_PcConfig.flashlightShadows = (atoi(value) != 0);
+        }
+        else if (strcmp(key, "flashlight_replace") == 0)
+        {
+            g_PcConfig.flashlightReplace = (atoi(value) != 0);
         }
         else if (strcmp(key, "flashlight_intensity") == 0)
         {

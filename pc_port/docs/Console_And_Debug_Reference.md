@@ -139,6 +139,7 @@ when it is off.
 | Command | Description |
 |---|---|
 | `flmode <0-3\|classic\|classicshadows\|modern\|modernshadows>` | Flashlight mode: Classic (PSX per-vertex), Classic + Shadows (per-pixel PSX-calibrated + shadows), Modern (stylized per-pixel spotlight), Modern + Shadows. Switching styles swaps the beam intensity/size between the styles' calibrated defaults unless customized. **(saved)** |
+| `flreplace [0\|1]` | Per-pixel modes only. 1 (default): the beam replaces the PSX per-vertex flashlight: vertices get the room's ambient alone, nothing dims the scene, and the beam follows the room's own flashlight strength, on/off ramp and light cap. Harry keeps his PSX self-light. The intro lighter becomes a flickering omni light at its flame (room tint, PSX reach, no shadow). 0: the older look, a 0.15/0.49 dim over the per-vertex result with the beam added on top. Bare toggles. **(saved)** |
 | `shadows [0\|1]` | Real-time flashlight shadows on/off within the current mode (Classic + Shadows without shadows is just Classic, so this moves between modes 1<->0 / 3<->2; toggles if no arg). **(saved)** |
 | `shadowstrength <f>` | How dark shadows get: `1.0` = full/default, lower = softer. |
 | `shadowfade <f>` | Contact-fade distance in view units. `0` = off (default, plain hard shadow); `>0` fades a shadow out that many units behind its object (contact-shadow look). |
