@@ -124,7 +124,10 @@ when it is off.
 | `noclip` | Walk through walls (floor collision stays on). |
 | `infammo [0\|1]` | Fire without spending ammo, so clips never empty and guns never need reloading. Affects only the guns you already carry: it suppresses the ammo decrement rather than granting rounds, so nothing is ever added to or removed from your inventory. The automatic reload-on-empty is held off while it is on, since that is the one path that would move rounds out of the inventory. Off restores normal ammo use exactly. Also a Quick Options > Cheats row. |
 | `notarget [0\|1]` | Enemies ignore Harry. |
-| `freecam [0\|1]` | Free camera: mouse look, W/A/S/D, Space/C up/down, Shift fast, Ctrl slow. |
+| `freecam [0\|1]` | Free camera: mouse look, W/A/S/D, Space/C up/down, Shift fast, Ctrl slow, G fog on/off. On exterior maps it draws the whole town (all outdoor blocks, depth-sorted). |
+| `freecampause [0\|1]` | The free camera freezes the game while it flies (default `1`). Session only. |
+| `lighterforce [0\|1]` | DEBUG: light as the lighter wherever the flashlight is on (its omni light and shadow, no flame sprite), to test them outside the lighter's scene. Session only. |
+| `freecamfog [0\|1]` | Fog in the free camera (starts off; `G` while flying). |
 | `collvis [0\|1]` | Collision visualizer panel. |
 | `fastforward [0\|1]` / `ff` | Speed the game up (the sticky toggle, not the Ctrl+F5 hold). |
 | `wireframe [0\|1]` | Wireframe rendering. |
@@ -141,10 +144,10 @@ when it is off.
 | `flmode <0-3\|classic\|classicshadows\|modern\|modernshadows>` | Flashlight mode: Classic (PSX per-vertex), Classic + Shadows (per-pixel PSX-calibrated + shadows), Modern (stylized per-pixel spotlight), Modern + Shadows. Switching styles swaps the beam intensity/size between the styles' calibrated defaults unless customized. **(saved)** |
 | `flreplace [0\|1]` | Per-pixel modes only. 1 (default): the beam replaces the PSX per-vertex flashlight: vertices get the room's ambient alone, nothing dims the scene, and the beam follows the room's own flashlight strength, on/off ramp and light cap. Harry keeps his PSX self-light. The intro lighter becomes a flickering omni light at its flame (room tint, PSX reach, no shadow). 0: the older look, a 0.15/0.49 dim over the per-vertex result with the beam added on top. Bare toggles. **(saved)** |
 | `shadows [0\|1]` | Real-time flashlight shadows on/off within the current mode (Classic + Shadows without shadows is just Classic, so this moves between modes 1<->0 / 3<->2; toggles if no arg). **(saved)** |
-| `shadowstrength <f>` | How dark shadows get: `1.0` = full/default, lower = softer. |
-| `shadowfade <f>` | Contact-fade distance in view units. `0` = off (default, plain hard shadow); `>0` fades a shadow out that many units behind its object (contact-shadow look). |
+| `shadowstrength <0..1>` | Flashlight shadow strength (`0.5` default, `1` = black). Session only; "Light Shadows" saves it. |
+| `shadowfade <m>` | Flashlight shadow length: metres behind its caster a shadow fades out over (`2.5` default, `0` = never). Session only; "Light Shadows" saves it. |
 | `shadownormal <f>` | Self-shadow-acne receiver offset (moves the sample toward the light along the light ray). `0` = off (default; receiver-plane depth correction handles most acne). |
-| `shadowbias <f>` | Depth-compare bias (default `0.0018`). |
+| `shadowbias <f>` | Depth-compare bias in shadow texels at the receiver distance, plus 2 view units (default `1.0`). |
 | `shadowfpsdrop <f>` | First-person shadow-light drop so FPS shadows aren't self-cancelled. |
 | `flashlight <color>` / `fl <color>` | Tint Harry's flashlight (red/green/blue/yellow/cyan/purple/orange/pink/white; `default`/`off` to clear). |
 | `worldlight <color>` / `wl <color>` | Same, for the world/ambient light. |
@@ -167,6 +170,27 @@ when it is off.
 | `msgshift <n>` | Message-box up-shift, psx-units. |
 | `bary <n>` | Cutscene letterbox bar Y (raise until bars hit the screen edges). |
 | `fogstr <f>` | World fog density (`1.0` = native PC fog; >1 deepens toward the PSX look). |
+| `fogmode [0\|1]` | `0` = PSX per-vertex fog, `1` = volumetric per-pixel fog (PSX curve and street-level visibility, plus height layer, drifting banks and a fogged backdrop). Bare toggles. **(saved)** |
+| `fogvol <0..2>` | Strength of the volumetric shaping (height layer, banks, mist tint); `0` leaves plain per-pixel fog. Session only. |
+| `weatherstyle [0\|1\|2]` | Snow and rain: `2` (default) = soft round flakes of a real size and thin rain streaks, `1` = the PSX sprites with sub-pixel placement, per-pixel fog and a depth test against the world (no flakes through ceilings); `0` = PSX exact. No argument cycles. **(saved)** |
+| `extfull [0\|1]` | Exteriors: `1` = every street stays textured and everything within the draw distance of the camera draws (no block pop-in); `0` = the original texture window. **(saved)** |
+| `shadowsoft <cm>` | Flashlight shadow softness (light size in cm, `3` default; `0` = fixed 5x5 PCF). Session only; the quick options "Light Shadows" page saves it. |
+| `holderlight <fill> [bounce]` | Flashlight replace: light on Harry himself as factors of the beam strength (`0.10` / `0.15` default). **(saved)** |
+| `fogprobe [0\|1]` | Volumetric fog coverage check: world surfaces that still fall back to PSX fog (no view position for every vertex) render magenta. |
+| `fogwisps <0..2>` | Drifting-mist strength of the volumetric fog (`0` = smooth, `1` = default). **(saved)** |
+| `fogcontrast <0..0.95>` | Wisp density contrast (`0.45` default). Session only. |
+| `fogglow <0..0.5>` | Dense mist brighter, gaps darker (`0.08` default); what makes wisps show against the void. Session only. |
+| `foglit <0..0.5>` | Top-lit / under-shaded wisp edges (`0.22` default). Session only. |
+| `fogground <dens> [height m]` | Ground mist: density at the ground as a multiple of the street fog (`1.6`) and the height over which it thins out (`0.45` m). Fixed in the world, so Harry walks through its patches. Session only. |
+| `fogsize <2..40>` | Wisp length along the wind in metres (`17` default). Session only. |
+| `quickmenu <page>` | Open the quick options on a page by title (`fog`, `fog_layers`, `fog_stages`, `graphics`, ...). |
+| `fogfollow <0..1>` | Share of the camera's travel the mist moves along (`0.25` default), so walking and running do not churn it; `0` = fixed in the world. Session only. |
+| `fogwind <m/s> [snow share]` | Drift speed (`0.45` default) and share of the map's snow wind (`0.25`). Session only. |
+| `fogclouds [0-1]` | Cloud masses in the volumetric mist (a large, slow noise octave; `0.5` default, `0` off). Session only; the quick options Fog Layers page saves it (`fog_clouds`). |
+| `fogblur [0-0.9]` | Fog motion blur: how much of the previous frame a mist pixel keeps per 60 Hz frame (`0.9` default, `0` off). Only pixels showing mist in both frames blend, so Harry, near geometry and the HUD stay sharp. Session only; the quick options Fog page saves it (`fog_motion_blur`). |
+| `fogfull <0.5..6>` | Full fog at this multiple of the fog distance / density (`1.75` default), capped below the draw edge. Session only. |
+| `fogquality <4..8>` | Volumetric fog samples per ray. **(saved)** |
+| `fogveil [0\|1]` | `fogstr` below 1 in light mist: `0` = thinner mist, full fog stays full; `1` = older veil. **(saved)** |
 | `alpha [0\|1]` | Slope-alpha invisible-wall fix (`1` = capped/fixed, `0` = original). |
 | `add <0\|1\|2>` | Debug the additive render layer (`0` = skip, `1` = normal, `2` = depth-tested). |
 | `postintensity <0..1>` / `postint` | Post-process effect mix. **(saved)** |

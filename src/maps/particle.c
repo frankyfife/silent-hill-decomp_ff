@@ -35,6 +35,13 @@
 #ifdef SH_PC_PORT
 #include "main/fileinfo.h" /* g_GameRegion */
 
+/* pc_weather.c: sub-pixel placement, fog and a depth test for the weather
+ * sprites (weather_style 1/2; 0 = PSX exact). */
+extern void Pc_WeatherSpritePlace(POLY_FT4* quad, const SVECTOR* posQ8, unsigned seed);
+extern void Pc_WeatherStreakPlace(POLY_FT4* quad, const SVECTOR* tailQ8, const SVECTOR* headQ8);
+extern void Pc_WeatherQuadPlace(POLY_FT4* quad, const SVECTOR* p0, const SVECTOR* p1, const SVECTOR* p2, const SVECTOR* p3);
+extern void Pc_WeatherSpriteDisarm(void);
+
 /* PAL reslices BG_ETC.TIM (US 128x256 -> 256x128, bottom half placed to the
  * right): US texels with v >= 128 — the dust/ember sprite band these
  * particles sample at v=240..255 — moved to (u+128, v-128). Fix a page-12
@@ -2919,6 +2926,17 @@ void Particle_SnowDraw(s_Particle* part)
 
 #ifdef SH_PC_PORT
             Pc_SpriteTriToQuad(polyFt3);
+            /* Sub-pixel placement, per-pixel fog and a depth test against the
+             * world for the flake (pc_weather.c; weather_style 0 = PSX exact). */
+            {
+                SVECTOR flakePos;
+
+                flakePos.vx = particlePosQ8.vx;
+                flakePos.vy = particlePosQ8.vy;
+                flakePos.vz = particlePosQ8.vz;
+                /* The particle slot seeds the flake's size. */
+                Pc_WeatherSpritePlace((POLY_FT4*)polyFt3, &flakePos, (unsigned)((size_t)localPart >> 3));
+            }
 #endif
 
 #if defined(MAP1_S00) || defined(MAP6_S00)
@@ -2946,6 +2964,8 @@ void Particle_SnowDraw(s_Particle* part)
 #endif
 
 #ifdef SH_PC_PORT
+            /* A flake that took no addPrim branch must not hand its flags on. */
+            Pc_WeatherSpriteDisarm();
             GsOUT_PACKET_P = (PACKET*)((POLY_FT4*)polyFt3 + 1);
 #else
             GsOUT_PACKET_P = (PACKET*)&polyFt3[1];
@@ -3124,7 +3144,13 @@ void Particle_RainDraw(s_Particle* part, s32 arg1)
                 poly->x3 = poly->x1 + 1;
                 poly->y3 = poly->y1;
 
+#ifdef SH_PC_PORT
+                Pc_WeatherStreakPlace(poly, &sp20, &sp28);
+#endif
                 addPrim(&g_OrderingTable0[g_ActiveBufferIdx].org[depth], poly);
+#ifdef SH_PC_PORT
+                Pc_WeatherSpriteDisarm();
+#endif
                 GsOUT_PACKET_P = (PACKET*)(poly + 1);
             }
 
@@ -3303,7 +3329,13 @@ void Particle_RainDraw(s_Particle* part, s32 arg1)
                 setRGB0(poly, r, g, b);
 #endif
 
+#ifdef SH_PC_PORT
+                Pc_WeatherQuadPlace(poly, &sp20, &sp28, &sp30, &sp38);
+#endif
                 addPrim(&g_OrderingTable0[g_ActiveBufferIdx].org[depth], poly);
+#ifdef SH_PC_PORT
+                Pc_WeatherSpriteDisarm();
+#endif
                 GsOUT_PACKET_P = (PACKET*)(poly + 1);
             }
 
@@ -3377,7 +3409,13 @@ void Particle_RainDraw(s_Particle* part, s32 arg1)
         poly->y1++;
         poly->y3 = poly->y1;
 
+#ifdef SH_PC_PORT
+        Pc_WeatherStreakPlace(poly, &sp20, &sp28);
+#endif
         addPrim(&g_OrderingTable0[g_ActiveBufferIdx].org[depth], poly);
+#ifdef SH_PC_PORT
+        Pc_WeatherSpriteDisarm();
+#endif
         GsOUT_PACKET_P = (PACKET*)(poly + 1);
     }
 }

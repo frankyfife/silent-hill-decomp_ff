@@ -284,6 +284,28 @@ int Pc_Rando_Active(void) { return s_enabled && s_run.running; }
 
 static const s_RandoMiniboss* miniboss_info(int mapIdx);
 
+/* The harvested arrival and room tables, read by the level select
+ * (pc_level_select.c) independently of whether a run is active. */
+int Pc_Rando_ArrivalCount(int mapIdx)
+{
+    return (mapIdx >= 0 && mapIdx < (int)ARRAY_SIZE(RANDO_ARRIVALS)) ? RANDO_ARRIVALS[mapIdx].count : 0;
+}
+
+const s_MapPoint2d* Pc_Rando_ArrivalGet(int mapIdx, int i)
+{
+    return (i >= 0 && i < Pc_Rando_ArrivalCount(mapIdx)) ? &RANDO_ARRIVALS[mapIdx].points[i] : NULL;
+}
+
+int Pc_Rando_RoomCount(int mapIdx)
+{
+    return (mapIdx >= 0 && mapIdx < (int)ARRAY_SIZE(RANDO_ROOMS)) ? RANDO_ROOMS[mapIdx].count : 0;
+}
+
+const s_MapPoint2d* Pc_Rando_RoomGet(int mapIdx, int i)
+{
+    return (i >= 0 && i < Pc_Rando_RoomCount(mapIdx)) ? &RANDO_ROOMS[mapIdx].points[i].point : NULL;
+}
+
 static int map_has_arrival(int mapIdx)
 {
     return mapIdx >= 0 && mapIdx < (int)ARRAY_SIZE(RANDO_ARRIVALS) &&

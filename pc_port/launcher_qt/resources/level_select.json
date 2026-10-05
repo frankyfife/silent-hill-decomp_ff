@@ -1,0 +1,4264 @@
+{
+ "generated_by": "pc_port/tools/gen_level_select.py",
+ "maps": [
+  {
+   "id": "map0_s00",
+   "name": "Old Silent Hill - intro sequence",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 19 (x -96.8, z 247.0)",
+     "x": -96.8,
+     "z": 247.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 22 (x -270.0, z 256.0)",
+     "x": -270.0,
+     "z": 256.0
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 21 (x -190.0, z 224.4)",
+     "x": -190.0,
+     "z": 224.4
+    }
+   ]
+  },
+  {
+   "id": "map0_s01",
+   "name": "Old Silent Hill - cafe",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map0_s00 (Old Silent Hill - intro sequence)",
+     "x": 2.0,
+     "z": 271.4
+    }
+   ]
+  },
+  {
+   "id": "map0_s02",
+   "name": "Old Silent Hill - bonus unlockable areas",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s00 (Old Silent Hill - streets)",
+     "x": -140.27,
+     "z": 58.1
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map2_s00 (Old Silent Hill - streets) #2",
+     "x": -101.2,
+     "z": 17.9
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map2_s00 (Old Silent Hill - streets) #3",
+     "x": -144.0,
+     "z": 16.0
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map2_s00 (Old Silent Hill - streets) #4",
+     "x": -177.8,
+     "z": 16.0
+    }
+   ]
+  },
+  {
+   "id": "map1_s00",
+   "name": "School - 1F, courtyard, basement",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map1_s01 (School - 2F)",
+     "x": 111.0,
+     "z": 45.9
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map1_s01 (School - 2F) #2",
+     "x": 58.0,
+     "z": 74.0
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map2_s00 (Old Silent Hill - streets)",
+     "x": 100.9,
+     "z": 16.7
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map2_s00 (Old Silent Hill - streets) #2",
+     "x": 99.1,
+     "z": 16.7
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 20 (x -100.0, z -59.2)",
+     "x": -100.0,
+     "z": -59.2
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 23 (x -56.3, z -55.1)",
+     "x": -56.34,
+     "z": -55.1
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 19 (x -100.0, z -60.8)",
+     "x": -100.0,
+     "z": -60.8
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 21 (x -140.0, z -59.2)",
+     "x": -140.0,
+     "z": -59.2
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 33 (x 140.0, z 18.4)",
+     "x": 140.0,
+     "z": 18.4
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 38 (x 100.0, z 23.2)",
+     "x": 100.0,
+     "z": 23.2
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 3 (x -19.7, z -68.9)",
+     "x": -19.7,
+     "z": -68.9
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 5 (x 140.0, z 23.2)",
+     "x": 140.0,
+     "z": 23.2
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 50 (x 106.6, z 49.1)",
+     "x": 106.6,
+     "z": 49.1
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 34 (x 149.6, z 20.0)",
+     "x": 149.6,
+     "z": 20.0
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 65 (x 62.4, z 48.4)",
+     "x": 62.4,
+     "z": 48.4
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 35 (x 130.4, z 20.0)",
+     "x": 130.4,
+     "z": 20.0
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 40 (x 57.0, z 143.8)",
+     "x": 57.0,
+     "z": 143.8
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 37 (x 144.4, z 18.4)",
+     "x": 144.4,
+     "z": 18.4
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 39 (x 57.2, z 21.3)",
+     "x": 57.2,
+     "z": 21.3
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 36 (x 131.6, z 16.0)",
+     "x": 131.6,
+     "z": 16.0
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 51 (x 106.6, z 71.5)",
+     "x": 106.6,
+     "z": 71.5
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 41 (x 143.1, z 191.5)",
+     "x": 143.1,
+     "z": 191.5
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 66 (x 62.4, z 70.8)",
+     "x": 62.4,
+     "z": 70.8
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 42 (x 123.9, z 191.5)",
+     "x": 123.9,
+     "z": 191.5
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 48 (x 100.0, z 136.8)",
+     "x": 100.0,
+     "z": 136.8
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 45 (x 133.5, z 193.1)",
+     "x": 133.5,
+     "z": 193.1
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 4 (x -19.7, z -52.5)",
+     "x": -19.7,
+     "z": -52.5
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 6 (x 133.5, z 188.3)",
+     "x": 133.5,
+     "z": 188.3
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 59 (x 137.8, z 54.6)",
+     "x": 137.8,
+     "z": 54.6
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 52 (x 109.8, z 48.7)",
+     "x": 109.8,
+     "z": 48.7
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 60 (x 137.8, z 65.4)",
+     "x": 137.8,
+     "z": 65.4
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 53 (x 109.8, z 59.1)",
+     "x": 109.8,
+     "z": 59.1
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 62 (x 135.8, z 94.6)",
+     "x": 135.8,
+     "z": 94.6
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 54 (x 109.8, z 61.5)",
+     "x": 109.8,
+     "z": 61.5
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 63 (x 135.8, z 105.4)",
+     "x": 135.8,
+     "z": 105.4
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 55 (x 109.8, z 71.9)",
+     "x": 109.8,
+     "z": 71.9
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 61 (x 143.2, z 66.4)",
+     "x": 143.2,
+     "z": 66.4
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 64 (x 141.2, z 93.6)",
+     "x": 141.2,
+     "z": 93.6
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 7 (x 23.3, z 19.9)",
+     "x": 23.3,
+     "z": 19.9
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 67 (x 59.2, z 41.2)",
+     "x": 59.2,
+     "z": 41.2
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 8 (x 23.2, z 59.4)",
+     "x": 23.2,
+     "z": 59.4
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 68 (x 59.2, z 44.4)",
+     "x": 59.2,
+     "z": 44.4
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 85 (x 22.8, z -19.5)",
+     "x": 22.8,
+     "z": -19.5
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 83 (x 53.6, z -17.2)",
+     "x": 53.6,
+     "z": -17.2
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 10 (x 58.0, z -19.0)",
+     "x": 58.0,
+     "z": -19.0
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 9 (x 111.0, z 42.6)",
+     "x": 111.0,
+     "z": 42.6
+    }
+   ]
+  },
+  {
+   "id": "map1_s01",
+   "name": "School - 2F",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map1_s00 (School - 1F, courtyard, basement)",
+     "x": -47.0,
+     "z": 42.7
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map1_s00 (School - 1F, courtyard, basement) #2",
+     "x": -101.0,
+     "z": 77.3
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 36 (x -10.4, z 20.0)",
+     "x": -10.4,
+     "z": 20.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 51 (x -51.4, z 49.1)",
+     "x": -51.4,
+     "z": 49.1
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 42 (x -14.9, z 191.5)",
+     "x": -14.9,
+     "z": 191.5
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 52 (x -51.4, z 71.5)",
+     "x": -51.4,
+     "z": 71.5
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 58 (x -23.2, z 54.6)",
+     "x": -23.2,
+     "z": 54.6
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 53 (x -48.2, z 48.7)",
+     "x": -48.2,
+     "z": 48.7
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 59 (x -23.2, z 65.4)",
+     "x": -23.2,
+     "z": 65.4
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 54 (x -48.2, z 59.1)",
+     "x": -48.2,
+     "z": 59.1
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 61 (x -23.2, z 94.6)",
+     "x": -23.2,
+     "z": 94.6
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 55 (x -48.2, z 61.5)",
+     "x": -48.2,
+     "z": 61.5
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 62 (x -23.2, z 105.4)",
+     "x": -23.2,
+     "z": 105.4
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 56 (x -48.2, z 71.9)",
+     "x": -48.2,
+     "z": 71.9
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 64 (x -63.0, z 137.8)",
+     "x": -63.0,
+     "z": 137.8
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 57 (x -50.2, z 73.1)",
+     "x": -50.2,
+     "z": 73.1
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 63 (x -17.8, z 93.6)",
+     "x": -17.8,
+     "z": 93.6
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 60 (x -17.8, z 66.4)",
+     "x": -17.8,
+     "z": 66.4
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 40 (x -56.2, z 16.8)",
+     "x": -56.2,
+     "z": 16.8
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 38 (x -15.6, z 18.4)",
+     "x": -15.6,
+     "z": 18.4
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 41 (x -102.0, z 23.7)",
+     "x": -102.0,
+     "z": 23.7
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 39 (x -28.4, z 18.4)",
+     "x": -28.4,
+     "z": 18.4
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 37 (x -29.6, z 20.0)",
+     "x": -29.6,
+     "z": 20.0
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 66 (x -96.6, z 48.4)",
+     "x": -96.6,
+     "z": 48.4
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 43 (x -34.1, z 191.5)",
+     "x": -34.1,
+     "z": 191.5
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 67 (x -96.6, z 70.8)",
+     "x": -96.6,
+     "z": 70.8
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 3 (x -137.9, z 19.9)",
+     "x": -137.9,
+     "z": 19.9
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 68 (x -99.8, z 41.2)",
+     "x": -99.8,
+     "z": 41.2
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 4 (x -136.8, z 59.4)",
+     "x": -136.8,
+     "z": 59.4
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 69 (x -99.8, z 44.4)",
+     "x": -99.8,
+     "z": 44.4
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 74 (x -136.2, z 95.6)",
+     "x": -136.2,
+     "z": 95.6
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 70 (x -99.8, z 48.0)",
+     "x": -99.8,
+     "z": 48.0
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 75 (x -136.2, z 106.4)",
+     "x": -136.2,
+     "z": 106.4
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 71 (x -99.8, z 58.4)",
+     "x": -99.8,
+     "z": 58.4
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 77 (x -136.8, z 134.6)",
+     "x": -136.8,
+     "z": 134.6
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 72 (x -99.8, z 60.8)",
+     "x": -99.8,
+     "z": 60.8
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 78 (x -136.8, z 145.4)",
+     "x": -136.8,
+     "z": 145.4
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 73 (x -99.8, z 71.3)",
+     "x": -99.8,
+     "z": 71.3
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 79 (x -142.2, z 133.6)",
+     "x": -142.2,
+     "z": 133.6
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 76 (x -141.6, z 107.4)",
+     "x": -141.6,
+     "z": 107.4
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 48 (x -96.0, z 141.8)",
+     "x": -96.0,
+     "z": 141.8
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 65 (x -64.0, z 142.8)",
+     "x": -64.0,
+     "z": 142.8
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 47 (x -97.0, z 136.8)",
+     "x": -97.0,
+     "z": 136.8
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 44 (x -16.1, z 193.1)",
+     "x": -16.1,
+     "z": 193.1
+    },
+    {
+     "arg": "room:42",
+     "label": "Room arrival, point 49 (x -63.8, z 96.8)",
+     "x": -63.8,
+     "z": 96.8
+    },
+    {
+     "arg": "room:43",
+     "label": "Room arrival, point 45 (x -28.9, z 193.1)",
+     "x": -28.9,
+     "z": 193.1
+    },
+    {
+     "arg": "room:44",
+     "label": "Room arrival, point 50 (x -98.6, z 96.8)",
+     "x": -98.6,
+     "z": 96.8
+    },
+    {
+     "arg": "room:45",
+     "label": "Room arrival, point 46 (x -32.1, z 193.1)",
+     "x": -32.1,
+     "z": 193.1
+    },
+    {
+     "arg": "room:46",
+     "label": "Room arrival, point 11 (x -61.0, z -17.2)",
+     "x": -61.0,
+     "z": -17.2
+    },
+    {
+     "arg": "room:47",
+     "label": "Room arrival, point 7 (x -101.0, z 74.0)",
+     "x": -101.0,
+     "z": 74.0
+    }
+   ]
+  },
+  {
+   "id": "map1_s02",
+   "name": "School Otherworld - 1F and courtyard",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map1_s00 (School - 1F, courtyard, basement)",
+     "x": -13.3,
+     "z": -68.1
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map1_s03 (School Otherworld - 2F and roof)",
+     "x": 23.27,
+     "z": 19.9
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map1_s03 (School Otherworld - 2F and roof) #2",
+     "x": 111.0,
+     "z": 45.9
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map1_s03 (School Otherworld - 2F and roof) #3",
+     "x": 58.0,
+     "z": 74.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 26 (x 56.0, z 19.3)",
+     "x": 56.0,
+     "z": 19.3
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 12 (x 62.4, z 42.4)",
+     "x": 62.4,
+     "z": 42.4
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 52 (x 100.0, z 23.2)",
+     "x": 100.0,
+     "z": 23.2
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 47 (x 140.0, z 18.4)",
+     "x": 140.0,
+     "z": 18.4
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 6 (x -19.7, z -68.9)",
+     "x": -19.7,
+     "z": -68.9
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 8 (x 140.0, z 23.2)",
+     "x": 140.0,
+     "z": 23.2
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 64 (x 106.6, z 49.1)",
+     "x": 106.6,
+     "z": 49.1
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 48 (x 149.6, z 20.0)",
+     "x": 149.6,
+     "z": 20.0
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 79 (x 62.4, z 48.4)",
+     "x": 62.4,
+     "z": 48.4
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 49 (x 130.4, z 20.0)",
+     "x": 130.4,
+     "z": 20.0
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 54 (x 57.0, z 143.8)",
+     "x": 57.0,
+     "z": 143.8
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 51 (x 144.4, z 18.4)",
+     "x": 144.4,
+     "z": 18.4
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 53 (x 57.2, z 21.3)",
+     "x": 57.2,
+     "z": 21.3
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 50 (x 131.6, z 16.0)",
+     "x": 131.6,
+     "z": 16.0
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 55 (x 143.1, z 191.5)",
+     "x": 143.1,
+     "z": 191.5
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 65 (x 106.6, z 71.5)",
+     "x": 106.6,
+     "z": 71.5
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 80 (x 62.4, z 70.8)",
+     "x": 62.4,
+     "z": 70.8
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 56 (x 123.9, z 191.5)",
+     "x": 123.9,
+     "z": 191.5
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 61 (x 99.4, z 96.6)",
+     "x": 99.4,
+     "z": 96.6
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 58 (x 125.1, z 193.1)",
+     "x": 125.1,
+     "z": 193.1
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 62 (x 100.0, z 136.8)",
+     "x": 100.0,
+     "z": 136.8
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 59 (x 133.5, z 193.1)",
+     "x": 133.5,
+     "z": 193.1
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 72 (x 132.8, z 136.8)",
+     "x": 132.8,
+     "z": 136.8
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 60 (x 137.9, z 193.1)",
+     "x": 137.9,
+     "z": 193.1
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 7 (x -19.7, z -52.5)",
+     "x": -19.7,
+     "z": -52.5
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 9 (x 133.5, z 188.3)",
+     "x": 133.5,
+     "z": 188.3
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 73 (x 137.8, z 54.6)",
+     "x": 137.8,
+     "z": 54.6
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 66 (x 109.8, z 48.7)",
+     "x": 109.8,
+     "z": 48.7
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 76 (x 135.8, z 94.6)",
+     "x": 135.8,
+     "z": 94.6
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 68 (x 109.8, z 61.5)",
+     "x": 109.8,
+     "z": 61.5
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 77 (x 135.8, z 105.4)",
+     "x": 135.8,
+     "z": 105.4
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 69 (x 109.8, z 71.9)",
+     "x": 109.8,
+     "z": 71.9
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 75 (x 143.2, z 66.4)",
+     "x": 143.2,
+     "z": 66.4
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 78 (x 141.2, z 93.6)",
+     "x": 141.2,
+     "z": 93.6
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 71 (x 139.2, z 136.8)",
+     "x": 139.2,
+     "z": 136.8
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 70 (x 107.8, z 73.1)",
+     "x": 107.8,
+     "z": 73.1
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 81 (x 59.2, z 41.6)",
+     "x": 59.2,
+     "z": 41.6
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 11 (x 23.2, z 59.4)",
+     "x": 23.2,
+     "z": 59.4
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 82 (x 59.2, z 44.8)",
+     "x": 59.2,
+     "z": 44.8
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 87 (x 22.2, z 95.6)",
+     "x": 22.2,
+     "z": 95.6
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 83 (x 59.2, z 48.0)",
+     "x": 59.2,
+     "z": 48.0
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 88 (x 22.2, z 106.4)",
+     "x": 22.2,
+     "z": 106.4
+    },
+    {
+     "arg": "room:42",
+     "label": "Room arrival, point 84 (x 59.2, z 58.4)",
+     "x": 59.2,
+     "z": 58.4
+    },
+    {
+     "arg": "room:43",
+     "label": "Room arrival, point 91 (x 23.2, z 145.4)",
+     "x": 23.2,
+     "z": 145.4
+    },
+    {
+     "arg": "room:44",
+     "label": "Room arrival, point 86 (x 59.2, z 71.3)",
+     "x": 59.2,
+     "z": 71.3
+    },
+    {
+     "arg": "room:45",
+     "label": "Room arrival, point 92 (x 17.8, z 133.6)",
+     "x": 17.8,
+     "z": 133.6
+    },
+    {
+     "arg": "room:46",
+     "label": "Room arrival, point 89 (x 16.8, z 107.4)",
+     "x": 16.8,
+     "z": 107.4
+    },
+    {
+     "arg": "room:47",
+     "label": "Room arrival, point 98 (x 22.8, z -57.8)",
+     "x": 22.8,
+     "z": -57.8
+    },
+    {
+     "arg": "room:48",
+     "label": "Room arrival, point 96 (x 53.6, z -22.8)",
+     "x": 53.6,
+     "z": -22.8
+    },
+    {
+     "arg": "room:49",
+     "label": "Room arrival, point 17 (x 63.2, z -59.6)",
+     "x": 63.2,
+     "z": -59.6
+    },
+    {
+     "arg": "room:50",
+     "label": "Room arrival, point 97 (x 53.6, z -17.2)",
+     "x": 53.6,
+     "z": -17.2
+    },
+    {
+     "arg": "room:51",
+     "label": "Room arrival, point 28 (x 108.2, z 47.5)",
+     "x": 108.2,
+     "z": 47.5
+    },
+    {
+     "arg": "room:52",
+     "label": "Room arrival, point 27 (x 108.2, z 47.5)",
+     "x": 108.2,
+     "z": 47.55
+    },
+    {
+     "arg": "room:53",
+     "label": "Room arrival, point 14 (x 58.0, z -19.0)",
+     "x": 58.0,
+     "z": -19.0
+    },
+    {
+     "arg": "room:54",
+     "label": "Room arrival, point 13 (x 111.0, z 42.6)",
+     "x": 111.0,
+     "z": 42.6
+    }
+   ]
+  },
+  {
+   "id": "map1_s03",
+   "name": "School Otherworld - 2F and roof",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map1_s02 (School Otherworld - 1F and courtyard)",
+     "x": 23.27,
+     "z": 19.9
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map1_s02 (School Otherworld - 1F and courtyard) #2",
+     "x": -47.0,
+     "z": 42.7
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map1_s02 (School Otherworld - 1F and courtyard) #3",
+     "x": -101.0,
+     "z": 77.3
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 41 (x -51.4, z 49.1)",
+     "x": -51.4,
+     "z": 49.1
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 26 (x -10.4, z 20.0)",
+     "x": -10.4,
+     "z": 20.0
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 32 (x -14.9, z 191.5)",
+     "x": -14.9,
+     "z": 191.5
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 42 (x -51.4, z 71.5)",
+     "x": -51.4,
+     "z": 71.5
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 48 (x -23.2, z 54.6)",
+     "x": -23.2,
+     "z": 54.6
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 43 (x -48.2, z 48.7)",
+     "x": -48.2,
+     "z": 48.7
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 49 (x -23.2, z 65.4)",
+     "x": -23.2,
+     "z": 65.4
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 44 (x -48.2, z 59.1)",
+     "x": -48.2,
+     "z": 59.1
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 51 (x -23.2, z 94.6)",
+     "x": -23.2,
+     "z": 94.6
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 45 (x -48.2, z 61.5)",
+     "x": -48.2,
+     "z": 61.5
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 52 (x -23.2, z 105.4)",
+     "x": -23.2,
+     "z": 105.4
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 46 (x -48.2, z 71.9)",
+     "x": -48.2,
+     "z": 71.9
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 54 (x -63.0, z 137.8)",
+     "x": -63.0,
+     "z": 137.8
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 47 (x -50.2, z 73.1)",
+     "x": -50.2,
+     "z": 73.1
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 53 (x -17.8, z 93.6)",
+     "x": -17.8,
+     "z": 93.6
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 50 (x -17.8, z 66.4)",
+     "x": -17.8,
+     "z": 66.4
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 30 (x -56.2, z 16.8)",
+     "x": -56.2,
+     "z": 16.8
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 28 (x -15.6, z 18.4)",
+     "x": -15.6,
+     "z": 18.4
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 27 (x -29.6, z 20.0)",
+     "x": -29.6,
+     "z": 20.0
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 56 (x -96.6, z 48.4)",
+     "x": -96.6,
+     "z": 48.4
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 33 (x -34.1, z 191.5)",
+     "x": -34.1,
+     "z": 191.5
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 57 (x -96.6, z 70.8)",
+     "x": -96.6,
+     "z": 70.8
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 58 (x -99.8, z 41.2)",
+     "x": -99.8,
+     "z": 41.2
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 10 (x -136.8, z 59.4)",
+     "x": -136.8,
+     "z": 59.4
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 59 (x -99.8, z 44.4)",
+     "x": -99.8,
+     "z": 44.4
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 64 (x -136.2, z 95.6)",
+     "x": -136.2,
+     "z": 95.6
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 60 (x -99.8, z 48.0)",
+     "x": -99.8,
+     "z": 48.0
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 65 (x -136.2, z 106.4)",
+     "x": -136.2,
+     "z": 106.4
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 61 (x -99.8, z 58.4)",
+     "x": -99.8,
+     "z": 58.4
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 67 (x -136.8, z 134.6)",
+     "x": -136.8,
+     "z": 134.6
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 62 (x -99.8, z 60.8)",
+     "x": -99.8,
+     "z": 60.8
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 68 (x -136.8, z 145.4)",
+     "x": -136.8,
+     "z": 145.4
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 63 (x -99.8, z 71.3)",
+     "x": -99.8,
+     "z": 71.3
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 69 (x -142.2, z 133.6)",
+     "x": -142.2,
+     "z": 133.6
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 66 (x -141.6, z 107.4)",
+     "x": -141.6,
+     "z": 107.4
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 38 (x -96.0, z 141.8)",
+     "x": -96.0,
+     "z": 141.8
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 55 (x -64.0, z 142.8)",
+     "x": -64.0,
+     "z": 142.8
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 37 (x -97.0, z 136.8)",
+     "x": -97.0,
+     "z": 136.8
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 34 (x -16.1, z 193.1)",
+     "x": -16.1,
+     "z": 193.1
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 8 (x -61.0, z -17.2)",
+     "x": -61.0,
+     "z": -17.2
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 4 (x -101.0, z 74.0)",
+     "x": -101.0,
+     "z": 74.0
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 6 (x -30.3, z -11.0)",
+     "x": -30.3,
+     "z": -11.0
+    },
+    {
+     "arg": "room:42",
+     "label": "Room arrival, point 5 (x -56.6, z -17.2)",
+     "x": -56.6,
+     "z": -17.2
+    }
+   ]
+  },
+  {
+   "id": "map1_s04",
+   "name": "Unused",
+   "usable": false,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    }
+   ]
+  },
+  {
+   "id": "map1_s05",
+   "name": "School - boss fight (Split Head)",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map1_s02 (School Otherworld - 1F and courtyard)",
+     "x": 19.72,
+     "z": -23.1
+    }
+   ]
+  },
+  {
+   "id": "map1_s06",
+   "name": "School - 1F and basement after the boss",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map1_s05 (School - boss fight (Split Head))",
+     "x": 22.0,
+     "z": -19.1
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map2_s00 (Old Silent Hill - streets)",
+     "x": 99.1,
+     "z": 16.7
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map2_s00 (Old Silent Hill - streets) #2",
+     "x": 100.9,
+     "z": 16.7
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 14 (x 140.0, z 18.4)",
+     "x": 140.0,
+     "z": 18.4
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 19 (x 100.0, z 23.2)",
+     "x": 100.0,
+     "z": 23.2
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 22 (x 106.6, z 49.1)",
+     "x": 106.6,
+     "z": 49.1
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 15 (x 149.6, z 20.0)",
+     "x": 149.6,
+     "z": 20.0
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 21 (x 57.0, z 143.8)",
+     "x": 57.0,
+     "z": 143.8
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 18 (x 144.4, z 18.4)",
+     "x": 144.4,
+     "z": 18.4
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 37 (x 22.8, z -19.5)",
+     "x": 22.8,
+     "z": -19.5
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 35 (x 53.6, z -17.2)",
+     "x": 53.6,
+     "z": -17.2
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 7 (x 58.0, z -19.0)",
+     "x": 58.0,
+     "z": -19.0
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 6 (x 111.0, z 42.6)",
+     "x": 111.0,
+     "z": 42.6
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 8 (x -47.0, z 42.7)",
+     "x": -47.0,
+     "z": 42.7
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 9 (x 111.0, z 45.9)",
+     "x": 111.0,
+     "z": 45.9
+    }
+   ]
+  },
+  {
+   "id": "map2_s00",
+   "name": "Old Silent Hill - streets",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map0_s01 (Old Silent Hill - cafe)",
+     "x": 22.2,
+     "z": 56.5
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map0_s02 (Old Silent Hill - bonus unlockable areas)",
+     "x": 122.5,
+     "z": 218.0
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map0_s02 (Old Silent Hill - bonus unlockable areas) #2",
+     "x": -247.5,
+     "z": -206.9
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map0_s02 (Old Silent Hill - bonus unlockable areas) #3",
+     "x": 30.0,
+     "z": 154.0
+    },
+    {
+     "arg": "door:4",
+     "label": "Door from map0_s02 (Old Silent Hill - bonus unlockable areas) #4",
+     "x": 82.6,
+     "z": -97.4
+    },
+    {
+     "arg": "door:5",
+     "label": "Door from map1_s06 (School - 1F and basement after the boss)",
+     "x": -287.0,
+     "z": -180.8
+    },
+    {
+     "arg": "door:6",
+     "label": "Door from map1_s06 (School - 1F and basement after the boss) #2",
+     "x": -287.0,
+     "z": -179.2
+    },
+    {
+     "arg": "door:7",
+     "label": "Door from map2_s01 (Church)",
+     "x": 36.0,
+     "z": -92.85
+    },
+    {
+     "arg": "door:8",
+     "label": "Door from map2_s02 (Central Silent Hill - streets)",
+     "x": -255.5,
+     "z": -109.3
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 7 (x -96.8, z 247.0)",
+     "x": -96.8,
+     "z": 247.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 6 (x -57.0, z 47.0)",
+     "x": -57.0,
+     "z": 47.0
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 9 (x -190.0, z 304.0)",
+     "x": -190.0,
+     "z": 304.0
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 8 (x -110.0, z 224.2)",
+     "x": -110.0,
+     "z": 224.2
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 23 (x 127.5, z 217.0)",
+     "x": 127.5,
+     "z": 217.0
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 22 (x -142.8, z 51.0)",
+     "x": -142.8,
+     "z": 51.0
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 25 (x 148.2, z 376.5)",
+     "x": 148.2,
+     "z": 376.5
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 24 (x 111.9, z 216.5)",
+     "x": 111.9,
+     "z": 216.5
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 27 (x -172.0, z 54.5)",
+     "x": -172.0,
+     "z": 54.5
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 26 (x 136.0, z 382.5)",
+     "x": 136.0,
+     "z": 382.5
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 35 (x -188.2, z 384.0)",
+     "x": -188.2,
+     "z": 384.0
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 32 (x 52.2, z 72.0)",
+     "x": 52.2,
+     "z": 72.0
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 39 (x 111.9, z 296.5)",
+     "x": 111.9,
+     "z": 296.5
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 40 (x 65.2, z 377.5)",
+     "x": 65.2,
+     "z": 377.5
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 38 (x 127.5, z 297.0)",
+     "x": 127.5,
+     "z": 297.0
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 37 (x -142.8, z -148.9)",
+     "x": -142.8,
+     "z": -148.9
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 42 (x -172.0, z -145.9)",
+     "x": -172.0,
+     "z": -145.9
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 41 (x 56.0, z 382.0)",
+     "x": 56.0,
+     "z": 382.0
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 51 (x -45.9, z 346.0)",
+     "x": -45.9,
+     "z": 346.0
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 49 (x 194.0, z -94.0)",
+     "x": 194.0,
+     "z": -94.0
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 52 (x 234.1, z 346.0)",
+     "x": 234.1,
+     "z": 346.0
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 59 (x 217.5, z 216.0)",
+     "x": 217.5,
+     "z": 216.0
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 58 (x -262.5, z -104.0)",
+     "x": -262.5,
+     "z": -104.0
+    }
+   ]
+  },
+  {
+   "id": "map2_s01",
+   "name": "Church",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s00 (Old Silent Hill - streets)",
+     "x": 19.97,
+     "z": 12.19
+    }
+   ]
+  },
+  {
+   "id": "map2_s02",
+   "name": "Central Silent Hill - streets",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s04 (Police station (Central Silent Hill))",
+     "x": -99.0,
+     "z": 11.0
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map3_s06 (Hospital - 1F after Otherworld)",
+     "x": 139.8,
+     "z": -13.0
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map4_s01 (Green Lion Antiques (normal + Otherworld))",
+     "x": -216.7,
+     "z": 108.2
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 4 (x -221.2, z 108.2)",
+     "x": -221.2,
+     "z": 108.2
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 6 (x 13.0, z 103.0)",
+     "x": 13.0,
+     "z": 103.0
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 13 (x 144.0, z -9.9)",
+     "x": 144.0,
+     "z": -9.9
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 9 (x -96.0, z -89.5)",
+     "x": -96.0,
+     "z": -89.5
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 28 (x -115.5, z 109.0)",
+     "x": -115.5,
+     "z": 109.0
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 30 (x -96.7, z -63.5)",
+     "x": -96.65,
+     "z": -63.5
+    }
+   ]
+  },
+  {
+   "id": "map2_s03",
+   "name": "Unused",
+   "usable": false,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    }
+   ]
+  },
+  {
+   "id": "map2_s04",
+   "name": "Police station (Central Silent Hill)",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s02 (Central Silent Hill - streets)",
+     "x": -20.0,
+     "z": 16.0
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map4_s02 (Central Silent Hill Otherworld - streets)",
+     "x": -100.0,
+     "z": 55.8
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 5 (x -58.3, z 20.8)",
+     "x": -58.3,
+     "z": 20.8
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 2 (x -23.2, z 19.2)",
+     "x": -23.2,
+     "z": 19.2
+    }
+   ]
+  },
+  {
+   "id": "map3_s00",
+   "name": "Hospital - until Kaufmann meeting",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s02 (Central Silent Hill - streets)",
+     "x": 28.4,
+     "z": 146.8
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 0 (x 94.6, z 101.5)",
+     "x": 94.6,
+     "z": 101.5
+    }
+   ]
+  },
+  {
+   "id": "map3_s01",
+   "name": "Hospital - 1F and basement after Kaufmann",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map3_s00 (Hospital - until Kaufmann meeting)",
+     "x": 21.6,
+     "z": 137.4
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map3_s00 (Hospital - until Kaufmann meeting) #2",
+     "x": 136.7,
+     "z": 97.9
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map3_s00 (Hospital - until Kaufmann meeting) #3",
+     "x": 56.8,
+     "z": 100.6
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 14 (x 57.5, z 19.1)",
+     "x": 57.5,
+     "z": 19.1
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 36 (x 64.5, z -14.8)",
+     "x": 64.5,
+     "z": -14.8
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 11 (x 23.3, z 28.0)",
+     "x": 23.3,
+     "z": 28.0
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 38 (x -19.3, z 19.7)",
+     "x": -19.3,
+     "z": 19.7
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 41 (x -15.8, z -20.6)",
+     "x": -15.8,
+     "z": -20.6
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 15 (x 97.2, z 20.4)",
+     "x": 97.2,
+     "z": 20.4
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 10 (x 21.6, z 24.6)",
+     "x": 21.6,
+     "z": 24.6
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 25 (x 61.8, z 98.4)",
+     "x": 61.8,
+     "z": 98.4
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 3 (x 17.0, z 14.3)",
+     "x": 17.0,
+     "z": 14.3
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 20 (x 56.8, z 60.6)",
+     "x": 56.8,
+     "z": 60.6
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 7 (x 21.6, z 12.6)",
+     "x": 21.6,
+     "z": 12.6
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 19 (x 17.1, z 58.5)",
+     "x": 17.1,
+     "z": 58.45
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 8 (x 21.6, z 16.0)",
+     "x": 21.6,
+     "z": 16.0
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 18 (x 136.8, z 19.8)",
+     "x": 136.8,
+     "z": 19.8
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 9 (x 21.6, z 20.6)",
+     "x": 21.6,
+     "z": 20.6
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 22 (x 99.3, z 61.3)",
+     "x": 99.3,
+     "z": 61.3
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 21 (x 59.0, z 57.6)",
+     "x": 59.0,
+     "z": 57.6
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 27 (x 101.0, z 99.9)",
+     "x": 101.0,
+     "z": 99.9
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 26 (x 56.8, z 100.6)",
+     "x": 56.8,
+     "z": 100.6
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 34 (x 136.7, z 97.9)",
+     "x": 136.7,
+     "z": 97.9
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 28 (x 95.6, z 104.1)",
+     "x": 95.6,
+     "z": 104.1
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 35 (x 139.9, z 101.1)",
+     "x": 139.9,
+     "z": 101.1
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 32 (x 25.8, z 143.2)",
+     "x": 25.8,
+     "z": 143.2
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 30 (x 21.6, z 137.4)",
+     "x": 21.6,
+     "z": 137.4
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 29 (x 94.6, z 101.5)",
+     "x": 94.6,
+     "z": 101.5
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 49 (x 62.8, z -19.4)",
+     "x": 62.8,
+     "z": -19.4
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 44 (x 17.6, z -18.9)",
+     "x": 17.6,
+     "z": -18.9
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 53 (x 136.8, z -20.6)",
+     "x": 136.8,
+     "z": -20.6
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 50 (x 62.8, z -22.6)",
+     "x": 62.8,
+     "z": -22.6
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 46 (x 20.1, z -18.9)",
+     "x": 20.1,
+     "z": -18.9
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 17 (x 99.7, z 20.4)",
+     "x": 99.7,
+     "z": 20.4
+    }
+   ]
+  },
+  {
+   "id": "map3_s02",
+   "name": "Hospital - antique shop cutscene",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map3_s01 (Hospital - 1F and basement after Kaufmann)",
+     "x": 130.0,
+     "z": 140.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 0 (x 143.3, z -138.4)",
+     "x": 143.3,
+     "z": -138.4
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 4 (x 100.0, z -127.2)",
+     "x": 100.0,
+     "z": -127.2
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 3 (x 140.0, z -140.8)",
+     "x": 140.0,
+     "z": -140.8
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 11 (x 69.6, z -138.4)",
+     "x": 69.6,
+     "z": -138.4
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 5 (x 95.2, z -140.0)",
+     "x": 95.2,
+     "z": -140.0
+    }
+   ]
+  },
+  {
+   "id": "map3_s03",
+   "name": "Hospital Otherworld - 3F and 2F",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map3_s02 (Hospital - antique shop cutscene)",
+     "x": -138.2,
+     "z": -61.2
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map3_s04 (Hospital Otherworld - 1F)",
+     "x": -136.7,
+     "z": 101.6
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map3_s04 (Hospital Otherworld - 1F) #2",
+     "x": -96.7,
+     "z": -98.4
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map3_s04 (Hospital Otherworld - 1F) #3",
+     "x": -21.0,
+     "z": 101.2
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 73 (x 17.5, z 59.1)",
+     "x": 17.5,
+     "z": 59.1
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 38 (x -136.7, z 101.6)",
+     "x": -136.7,
+     "z": 101.6
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 1 (x -96.7, z -98.4)",
+     "x": -96.7,
+     "z": -98.4
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 4 (x -59.8, z -87.0)",
+     "x": -59.8,
+     "z": -87.0
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 3 (x -100.0, z -100.8)",
+     "x": -100.0,
+     "z": -100.8
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 32 (x -23.2, z -18.6)",
+     "x": -23.2,
+     "z": -18.6
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 6 (x -58.2, z -91.2)",
+     "x": -58.2,
+     "z": -91.2
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 30 (x -60.0, z -16.0)",
+     "x": -60.0,
+     "z": -16.0
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 8 (x -61.4, z -101.4)",
+     "x": -61.4,
+     "z": -101.4
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 33 (x -138.2, z -101.6)",
+     "x": -138.2,
+     "z": -101.6
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 9 (x -62.4, z -98.2)",
+     "x": -62.4,
+     "z": -98.2
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 11 (x -15.2, z -107.2)",
+     "x": -15.2,
+     "z": -107.2
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 10 (x -64.6, z -99.8)",
+     "x": -64.6,
+     "z": -99.8
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 28 (x -139.4, z -16.8)",
+     "x": -139.4,
+     "z": -16.8
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 13 (x -19.4, z -108.8)",
+     "x": -19.4,
+     "z": -108.8
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 20 (x -136.8, z -58.4)",
+     "x": -136.8,
+     "z": -58.4
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 14 (x -21.6, z -107.2)",
+     "x": -21.6,
+     "z": -107.2
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 27 (x -16.8, z -60.6)",
+     "x": -16.8,
+     "z": -60.6
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 15 (x -21.6, z -104.6)",
+     "x": -21.6,
+     "z": -104.6
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 26 (x -56.8, z -60.6)",
+     "x": -56.8,
+     "z": -60.6
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 16 (x -21.6, z -101.4)",
+     "x": -21.6,
+     "z": -101.4
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 25 (x -96.8, z -61.4)",
+     "x": -96.8,
+     "z": -61.4
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 18 (x -21.6, z -95.0)",
+     "x": -21.6,
+     "z": -95.0
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 34 (x -143.2, z -99.4)",
+     "x": -143.2,
+     "z": -99.4
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 19 (x -18.4, z -103.4)",
+     "x": -18.4,
+     "z": -103.4
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 22 (x -138.2, z -142.8)",
+     "x": -138.2,
+     "z": -142.8
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 24 (x -17.4, z 101.2)",
+     "x": -17.4,
+     "z": 101.2
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 36 (x -138.2, z -61.2)",
+     "x": -138.2,
+     "z": -61.2
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 41 (x -99.0, z 108.1)",
+     "x": -99.0,
+     "z": 108.1
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 40 (x -140.0, z 99.2)",
+     "x": -140.0,
+     "z": 99.2
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 70 (x -24.0, z 20.2)",
+     "x": -24.0,
+     "z": 20.2
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 42 (x -97.4, z 107.1)",
+     "x": -97.4,
+     "z": 107.1
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 69 (x -64.0, z 20.0)",
+     "x": -64.0,
+     "z": 20.0
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 44 (x -97.4, z 96.9)",
+     "x": -97.4,
+     "z": 96.9
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 66 (x -140.8, z 23.0)",
+     "x": -140.85,
+     "z": 23.0
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 45 (x -100.6, z 93.7)",
+     "x": -100.6,
+     "z": 93.7
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 68 (x -102.4, z 20.9)",
+     "x": -102.4,
+     "z": 20.95
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 67 (x -137.2, z 19.8)",
+     "x": -137.25,
+     "z": 19.8
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 71 (x -18.2, z 138.4)",
+     "x": -18.2,
+     "z": 138.4
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 46 (x -101.6, z 96.9)",
+     "x": -101.6,
+     "z": 96.9
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 48 (x -57.6, z 93.4)",
+     "x": -57.6,
+     "z": 93.4
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 47 (x -103.8, z 95.3)",
+     "x": -103.8,
+     "z": 95.3
+    },
+    {
+     "arg": "room:42",
+     "label": "Room arrival, point 57 (x -16.0, z 104.0)",
+     "x": -16.0,
+     "z": 104.0
+    },
+    {
+     "arg": "room:43",
+     "label": "Room arrival, point 51 (x -64.0, z 93.4)",
+     "x": -64.0,
+     "z": 93.4
+    },
+    {
+     "arg": "room:44",
+     "label": "Room arrival, point 63 (x -97.5, z 57.4)",
+     "x": -97.5,
+     "z": 57.35
+    },
+    {
+     "arg": "room:45",
+     "label": "Room arrival, point 52 (x -64.0, z 96.0)",
+     "x": -64.0,
+     "z": 96.0
+    },
+    {
+     "arg": "room:46",
+     "label": "Room arrival, point 62 (x -136.9, z 59.1)",
+     "x": -136.95,
+     "z": 59.15
+    },
+    {
+     "arg": "room:47",
+     "label": "Room arrival, point 55 (x -64.0, z 105.6)",
+     "x": -64.0,
+     "z": 105.6
+    },
+    {
+     "arg": "room:48",
+     "label": "Room arrival, point 72 (x -23.2, z 140.6)",
+     "x": -23.2,
+     "z": 140.6
+    },
+    {
+     "arg": "room:49",
+     "label": "Room arrival, point 56 (x -60.8, z 97.2)",
+     "x": -60.8,
+     "z": 97.2
+    },
+    {
+     "arg": "room:50",
+     "label": "Room arrival, point 59 (x -141.8, z -61.2)",
+     "x": -141.8,
+     "z": -61.2
+    }
+   ]
+  },
+  {
+   "id": "map3_s04",
+   "name": "Hospital Otherworld - 1F",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map3_s03 (Hospital Otherworld - 3F and 2F)",
+     "x": 143.3,
+     "z": 27.2
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map3_s03 (Hospital Otherworld - 3F and 2F) #2",
+     "x": 17.8,
+     "z": 18.8
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map3_s05 (Hospital Otherworld - basement)",
+     "x": 57.8,
+     "z": 60.6
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 0 (x 61.0, z 139.9)",
+     "x": 61.0,
+     "z": 139.9
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 17 (x 143.3, z 27.2)",
+     "x": 143.3,
+     "z": 27.2
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 36 (x 17.5, z 59.1)",
+     "x": 17.5,
+     "z": 59.1
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 26 (x 137.0, z 13.6)",
+     "x": 137.0,
+     "z": 13.6
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 6 (x 22.0, z 138.2)",
+     "x": 22.0,
+     "z": 138.2
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 24 (x 136.6, z 10.4)",
+     "x": 136.6,
+     "z": 10.4
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 7 (x 140.3, z 105.1)",
+     "x": 140.3,
+     "z": 105.1
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 23 (x 139.8, z 10.4)",
+     "x": 139.8,
+     "z": 10.4
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 8 (x 99.8, z 103.1)",
+     "x": 99.85,
+     "z": 103.1
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 21 (x 141.6, z 15.2)",
+     "x": 141.6,
+     "z": 15.2
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 12 (x 137.1, z 58.5)",
+     "x": 137.1,
+     "z": 58.45
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 20 (x 141.6, z 19.8)",
+     "x": 141.6,
+     "z": 19.8
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 13 (x 96.8, z 59.8)",
+     "x": 96.8,
+     "z": 59.8
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 19 (x 141.6, z 23.8)",
+     "x": 141.6,
+     "z": 23.8
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 14 (x 55.2, z 60.6)",
+     "x": 55.2,
+     "z": 60.6
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 30 (x 25.6, z 21.6)",
+     "x": 25.6,
+     "z": 21.6
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 25 (x 135.2, z 12.0)",
+     "x": 135.2,
+     "z": 12.0
+    }
+   ]
+  },
+  {
+   "id": "map3_s05",
+   "name": "Hospital Otherworld - basement",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map3_s03 (Hospital Otherworld - 3F and 2F)",
+     "x": 64.5,
+     "z": -54.8
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map3_s04 (Hospital Otherworld - 1F)",
+     "x": 100.2,
+     "z": -58.9
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 36 (x 17.5, z 59.1)",
+     "x": 17.5,
+     "z": 59.1
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 2 (x 64.5, z -54.8)",
+     "x": 64.5,
+     "z": -54.8
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 19 (x 20.8, z -135.6)",
+     "x": 20.8,
+     "z": -135.6
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 7 (x 62.8, z -59.4)",
+     "x": 62.8,
+     "z": -59.4
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 4 (x 97.6, z -58.9)",
+     "x": 97.6,
+     "z": -58.9
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 12 (x 136.8, z -20.6)",
+     "x": 136.8,
+     "z": -20.6
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 8 (x 62.8, z -62.6)",
+     "x": 62.8,
+     "z": -62.6
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 14 (x 23.2, z -59.2)",
+     "x": 23.2,
+     "z": -59.2
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 10 (x 59.6, z -55.6)",
+     "x": 59.6,
+     "z": -55.6
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 15 (x 63.2, z -19.4)",
+     "x": 63.2,
+     "z": -19.4
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 11 (x 59.6, z -61.4)",
+     "x": 59.6,
+     "z": -61.4
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 17 (x 18.0, z -18.4)",
+     "x": 18.0,
+     "z": -18.4
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 16 (x 58.0, z -23.2)",
+     "x": 58.0,
+     "z": -23.2
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 18 (x 20.8, z -20.0)",
+     "x": 20.8,
+     "z": -20.0
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 23 (x 139.3, z -91.2)",
+     "x": 139.3,
+     "z": -91.2
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 22 (x 20.8, z -150.4)",
+     "x": 20.8,
+     "z": -150.4
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 26 (x 92.8, z -100.0)",
+     "x": 92.8,
+     "z": -100.0
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 24 (x 141.6, z -99.2)",
+     "x": 141.6,
+     "z": -99.2
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 34 (x 20.0, z -103.2)",
+     "x": 20.0,
+     "z": -103.2
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 29 (x 104.8, z -98.4)",
+     "x": 104.8,
+     "z": -98.4
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 33 (x 140.0, z -63.2)",
+     "x": 140.0,
+     "z": -63.2
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 27 (x 95.2, z -98.4)",
+     "x": 95.2,
+     "z": -98.4
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 35 (x 60.0, z -96.8)",
+     "x": 60.0,
+     "z": -96.8
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 30 (x 95.2, z -101.6)",
+     "x": 95.2,
+     "z": -101.6
+    }
+   ]
+  },
+  {
+   "id": "map3_s06",
+   "name": "Hospital - 1F after Otherworld",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s02 (Central Silent Hill - streets)",
+     "x": 28.4,
+     "z": 146.8
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map3_s04 (Hospital Otherworld - 1F)",
+     "x": 100.0,
+     "z": 100.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 25 (x 61.8, z 98.4)",
+     "x": 61.8,
+     "z": 98.4
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 3 (x 17.0, z 14.3)",
+     "x": 17.0,
+     "z": 14.3
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 2 (x 101.0, z 99.9)",
+     "x": 101.0,
+     "z": 99.9
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 3 (x 56.8, z 100.6)",
+     "x": 56.8,
+     "z": 100.6
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 4 (x 136.7, z 97.9)",
+     "x": 136.7,
+     "z": 97.9
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 5 (x 95.6, z 104.1)",
+     "x": 95.6,
+     "z": 104.1
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 35 (x 139.9, z 101.1)",
+     "x": 139.9,
+     "z": 101.1
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 32 (x 25.8, z 143.2)",
+     "x": 25.8,
+     "z": 143.2
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 8 (x 21.6, z 137.4)",
+     "x": 21.6,
+     "z": 137.4
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 9 (x 94.6, z 101.5)",
+     "x": 94.6,
+     "z": 101.5
+    }
+   ]
+  },
+  {
+   "id": "map4_s00",
+   "name": "Unused",
+   "usable": false,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    }
+   ]
+  },
+  {
+   "id": "map4_s01",
+   "name": "Green Lion Antiques (normal + Otherworld)",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s02 (Central Silent Hill - streets)",
+     "x": 182.0,
+     "z": 58.9
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map4_s02 (Central Silent Hill Otherworld - streets)",
+     "x": 21.2,
+     "z": 58.9
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map4_s04 (Hospital - 1F (Lisa cutscene))",
+     "x": 20.0,
+     "z": 60.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 18 (x 185.4, z 99.6)",
+     "x": 185.4,
+     "z": 99.6
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 4 (x 177.5, z 23.6)",
+     "x": 177.5,
+     "z": 23.6
+    }
+   ]
+  },
+  {
+   "id": "map4_s02",
+   "name": "Central Silent Hill Otherworld - streets",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s04 (Police station (Central Silent Hill))",
+     "x": -98.5,
+     "z": 11.2
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map4_s01 (Green Lion Antiques (normal + Otherworld))",
+     "x": -216.7,
+     "z": 108.2
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map4_s03 (Mall and boss fight)",
+     "x": 15.0,
+     "z": 61.0
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map4_s03 (Mall and boss fight) #2",
+     "x": 52.0,
+     "z": 60.0
+    },
+    {
+     "arg": "door:4",
+     "label": "Door from map4_s04 (Hospital - 1F (Lisa cutscene))",
+     "x": 139.8,
+     "z": -13.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 27 (x -115.5, z 109.0)",
+     "x": -115.5,
+     "z": 109.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 29 (x -96.7, z -63.5)",
+     "x": -96.65,
+     "z": -63.5
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 3 (x -221.2, z 108.2)",
+     "x": -221.2,
+     "z": 108.2
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 5 (x 13.0, z 103.0)",
+     "x": 13.0,
+     "z": 103.0
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 12 (x 144.0, z -9.9)",
+     "x": 144.0,
+     "z": -9.9
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 8 (x -96.0, z -89.5)",
+     "x": -96.0,
+     "z": -89.5
+    }
+   ]
+  },
+  {
+   "id": "map4_s03",
+   "name": "Mall and boss fight",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map4_s02 (Central Silent Hill Otherworld - streets)",
+     "x": 150.5,
+     "z": 61.0
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map4_s02 (Central Silent Hill Otherworld - streets) #2",
+     "x": 132.0,
+     "z": 140.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 1 (x 119.5, z 141.5)",
+     "x": 119.5,
+     "z": 141.5
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 3 (x 109.5, z -99.0)",
+     "x": 109.5,
+     "z": -99.0
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 5 (x 109.5, z -101.0)",
+     "x": 109.5,
+     "z": -101.0
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 7 (x 167.5, z 61.0)",
+     "x": 167.5,
+     "z": 61.0
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 9 (x 167.5, z 59.0)",
+     "x": 167.5,
+     "z": 59.0
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 20 (x 224.4, z -20.0)",
+     "x": 224.4,
+     "z": -20.0
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 19 (x 124.5, z -92.6)",
+     "x": 124.5,
+     "z": -92.6
+    }
+   ]
+  },
+  {
+   "id": "map4_s04",
+   "name": "Hospital - 1F (Lisa cutscene)",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map4_s01 (Green Lion Antiques (normal + Otherworld))",
+     "x": 57.6,
+     "z": 140.5
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map4_s02 (Central Silent Hill Otherworld - streets)",
+     "x": 108.4,
+     "z": 146.8
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 1 (x 101.6, z 137.4)",
+     "x": 101.6,
+     "z": 137.4
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 8 (x 17.0, z 140.4)",
+     "x": 17.0,
+     "z": 140.4
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 4 (x 61.0, z 139.9)",
+     "x": 61.0,
+     "z": 139.9
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 6 (x 54.6, z 141.5)",
+     "x": 54.6,
+     "z": 141.5
+    }
+   ]
+  },
+  {
+   "id": "map4_s05",
+   "name": "Central SH Otherworld - Floatstinger boss",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map4_s04 (Hospital - 1F (Lisa cutscene))",
+     "x": 139.8,
+     "z": -13.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 13 (x -115.5, z 108.0)",
+     "x": -115.5,
+     "z": 108.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 5 (x 144.0, z -9.9)",
+     "x": 144.0,
+     "z": -9.9
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 1 (x -96.0, z 190.5)",
+     "x": -96.0,
+     "z": 190.5
+    }
+   ]
+  },
+  {
+   "id": "map4_s06",
+   "name": "Unused",
+   "usable": false,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    }
+   ]
+  },
+  {
+   "id": "map5_s00",
+   "name": "Sewers - lower and upper levels",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map2_s00 (Old Silent Hill - streets)",
+     "x": 56.8,
+     "z": 60.0
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map5_s01 (Resort Area)",
+     "x": -22.0,
+     "z": 60.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 26 (x -46.0, z -6.0)",
+     "x": -46.0,
+     "z": -6.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 23 (x -29.0, z -5.4)",
+     "x": -29.0,
+     "z": -5.4
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 27 (x -87.5, z -103.6)",
+     "x": -87.5,
+     "z": -103.6
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 6 (x 49.5, z -48.0)",
+     "x": 49.5,
+     "z": -48.0
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 5 (x 49.5, z -48.0)",
+     "x": 49.5,
+     "z": -48.0
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 9 (x 0.0, z -14.5)",
+     "x": 0.0,
+     "z": -14.5
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 10 (x 0.0, z -14.5)",
+     "x": 0.0,
+     "z": -14.5
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 15 (x -89.5, z -96.0)",
+     "x": -89.5,
+     "z": -96.0
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 14 (x -89.5, z -96.0)",
+     "x": -89.5,
+     "z": -96.0
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 4 (x 54.5, z -48.0)",
+     "x": 54.5,
+     "z": -48.0
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 3 (x 54.5, z -48.0)",
+     "x": 54.5,
+     "z": -48.0
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 8 (x 45.0, z -49.5)",
+     "x": 45.0,
+     "z": -49.5
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 7 (x 45.0, z -49.5)",
+     "x": 45.0,
+     "z": -49.5
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 17 (x -89.5, z -76.0)",
+     "x": -89.5,
+     "z": -76.0
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 16 (x -89.5, z -76.0)",
+     "x": -89.5,
+     "z": -76.0
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 19 (x -89.5, z -40.0)",
+     "x": -89.5,
+     "z": -40.0
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 18 (x -89.5, z -40.0)",
+     "x": -89.5,
+     "z": -40.0
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 21 (x -95.5, z -16.0)",
+     "x": -95.5,
+     "z": -16.0
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 20 (x -95.5, z -16.0)",
+     "x": -95.5,
+     "z": -16.0
+    }
+   ]
+  },
+  {
+   "id": "map5_s01",
+   "name": "Resort Area",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map5_s00 (Sewers - lower and upper levels)",
+     "x": -60.1,
+     "z": 2.5
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map5_s02 (Annie's Bar and Indian Runner (Resort Area))",
+     "x": -13.5,
+     "z": -60.4
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map5_s02 (Annie's Bar and Indian Runner (Resort Area)) #2",
+     "x": 52.0,
+     "z": -58.0
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map5_s03 (Norman's Motel (Resort Area))",
+     "x": -157.5,
+     "z": -8.0
+    },
+    {
+     "arg": "door:4",
+     "label": "Door from map5_s03 (Norman's Motel (Resort Area)) #2",
+     "x": -152.0,
+     "z": -23.0
+    },
+    {
+     "arg": "door:5",
+     "label": "Door from map5_s03 (Norman's Motel (Resort Area)) #3",
+     "x": 32.0,
+     "z": -142.5
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 12 (x -155.0, z -24.0)",
+     "x": -155.0,
+     "z": -24.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 14 (x 21.0, z -148.0)",
+     "x": 21.0,
+     "z": -148.0
+    }
+   ]
+  },
+  {
+   "id": "map5_s02",
+   "name": "Annie's Bar and Indian Runner (Resort Area)",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map5_s01 (Resort Area)",
+     "x": 134.6,
+     "z": 17.9
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map5_s01 (Resort Area) #2",
+     "x": 136.8,
+     "z": 55.7
+    }
+   ]
+  },
+  {
+   "id": "map5_s03",
+   "name": "Norman's Motel (Resort Area)",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map5_s01 (Resort Area)",
+     "x": 63.3,
+     "z": 19.1
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map5_s01 (Resort Area) #2",
+     "x": 56.3,
+     "z": 58.7
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map5_s01 (Resort Area) #3",
+     "x": 103.6,
+     "z": 57.3
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 7 (x 59.5, z 21.9)",
+     "x": 59.5,
+     "z": 21.9
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 5 (x 59.6, z 62.0)",
+     "x": 59.6,
+     "z": 62.0
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 8 (x 62.4, z 17.9)",
+     "x": 62.4,
+     "z": 17.9
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 14 (x 103.0, z 17.6)",
+     "x": 103.0,
+     "z": 17.6
+    }
+   ]
+  },
+  {
+   "id": "map6_s00",
+   "name": "Resort Area Otherworld",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map5_s01 (Resort Area)",
+     "x": -8.0,
+     "z": 120.0
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map6_s01 (Boat at Lakeside Pier)",
+     "x": -155.9,
+     "z": 27.6
+    },
+    {
+     "arg": "door:2",
+     "label": "Door from map6_s01 (Boat at Lakeside Pier) #2",
+     "x": -157.6,
+     "z": 20.0
+    },
+    {
+     "arg": "door:3",
+     "label": "Door from map6_s02 (Lakeside Pier and Lighthouse)",
+     "x": -107.0,
+     "z": -59.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 2 (x -20.0, z 120.0)",
+     "x": -20.0,
+     "z": 120.0
+    }
+   ]
+  },
+  {
+   "id": "map6_s01",
+   "name": "Boat at Lakeside Pier",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map6_s00 (Resort Area Otherworld)",
+     "x": -60.0,
+     "z": 62.6
+    },
+    {
+     "arg": "door:1",
+     "label": "Door from map6_s00 (Resort Area Otherworld) #2",
+     "x": -21.3,
+     "z": 58.7
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 4 (x -19.9, z 60.7)",
+     "x": -19.95,
+     "z": 60.7
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 3 (x -60.0, z 57.0)",
+     "x": -60.0,
+     "z": 57.0
+    }
+   ]
+  },
+  {
+   "id": "map6_s02",
+   "name": "Lakeside Pier and Lighthouse",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map6_s00 (Resort Area Otherworld)",
+     "x": -20.0,
+     "z": -21.62
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 3 (x 60.0, z -19.0)",
+     "x": 60.0,
+     "z": -19.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 4 (x -20.9, z -20.0)",
+     "x": -20.9,
+     "z": -20.0
+    }
+   ]
+  },
+  {
+   "id": "map6_s03",
+   "name": "Sewer to Lakeside Amusement Park",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map6_s00 (Resort Area Otherworld)",
+     "x": -20.0,
+     "z": 24.4
+    }
+   ]
+  },
+  {
+   "id": "map6_s04",
+   "name": "Amusement Park - Cybil boss, Alessa kidnapping",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map6_s03 (Sewer to Lakeside Amusement Park)",
+     "x": -61.5,
+     "z": -85.7
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 0 (x 22.6, z 96.6)",
+     "x": 22.6,
+     "z": 96.6
+    }
+   ]
+  },
+  {
+   "id": "map6_s05",
+   "name": "Unused",
+   "usable": false,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    }
+   ]
+  },
+  {
+   "id": "map7_s00",
+   "name": "Nowhere - hospital 1F, Lisa cutscene",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map6_s04 (Amusement Park - Cybil boss, Alessa kidnapping)",
+     "x": 17.4,
+     "z": -139.1
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 0 (x 68.0, z -139.1)",
+     "x": 68.0,
+     "z": -139.05
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 1 (x 14.6, z -138.5)",
+     "x": 14.6,
+     "z": -138.5
+    }
+   ]
+  },
+  {
+   "id": "map7_s01",
+   "name": "Nowhere",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map7_s00 (Nowhere - hospital 1F, Lisa cutscene)",
+     "x": -20.9,
+     "z": -20.9
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 0 (x -65.1, z -28.0)",
+     "x": -65.1,
+     "z": -28.0
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 169 (x -98.4, z -146.6)",
+     "x": -98.4,
+     "z": -146.6
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 13 (x -100.0, z -20.8)",
+     "x": -100.0,
+     "z": -20.8
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 5 (x -60.0, z -15.2)",
+     "x": -60.0,
+     "z": -15.2
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 16 (x -139.4, z -16.8)",
+     "x": -139.4,
+     "z": -16.8
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 6 (x -63.0, z -26.4)",
+     "x": -63.0,
+     "z": -26.4
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 17 (x -176.8, z -20.6)",
+     "x": -176.8,
+     "z": -20.6
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 7 (x -63.4, z -29.6)",
+     "x": -63.4,
+     "z": -29.6
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 18 (x -18.0, z -61.1)",
+     "x": -18.0,
+     "z": -61.1
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 8 (x -58.4, z -28.2)",
+     "x": -58.4,
+     "z": -28.2
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 19 (x -64.8, z -59.4)",
+     "x": -64.8,
+     "z": -59.4
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 9 (x -58.4, z -16.2)",
+     "x": -58.4,
+     "z": -16.2
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 30 (x -61.6, z -107.2)",
+     "x": -61.6,
+     "z": -107.2
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 10 (x -58.4, z -24.8)",
+     "x": -58.4,
+     "z": -24.8
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 14 (x -101.8, z -148.2)",
+     "x": -101.8,
+     "z": -148.2
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 15 (x -58.4, z -20.2)",
+     "x": -58.4,
+     "z": -20.2
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 26 (x -139.2, z -59.1)",
+     "x": -139.2,
+     "z": -59.1
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 21 (x -61.6, z -59.2)",
+     "x": -61.6,
+     "z": -59.2
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 22 (x -102.6, z -60.9)",
+     "x": -102.6,
+     "z": -60.9
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 93 (x -96.7, z -18.4)",
+     "x": -96.7,
+     "z": -18.4
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 94 (x -136.7, z -98.4)",
+     "x": -136.7,
+     "z": -98.4
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 95 (x 62.7, z -20.4)",
+     "x": 62.7,
+     "z": -20.4
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 27 (x -176.8, z -54.6)",
+     "x": -176.8,
+     "z": -54.6
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 25 (x -142.4, z -58.9)",
+     "x": -142.4,
+     "z": -58.9
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 29 (x -22.4, z -99.0)",
+     "x": -22.4,
+     "z": -99.05
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 28 (x -176.8, z -65.4)",
+     "x": -176.8,
+     "z": -65.4
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 39 (x -104.6, z -99.8)",
+     "x": -104.6,
+     "z": -99.8
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 31 (x -55.2, z -107.2)",
+     "x": -55.2,
+     "z": -107.2
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 51 (x -20.1, z -136.9)",
+     "x": -20.15,
+     "z": -136.9
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 32 (x -58.4, z -103.4)",
+     "x": -58.4,
+     "z": -103.4
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 52 (x -56.8, z -141.4)",
+     "x": -56.8,
+     "z": -141.4
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 33 (x -61.6, z -95.0)",
+     "x": -61.6,
+     "z": -95.0
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 48 (x -140.0, z -100.8)",
+     "x": -140.0,
+     "z": -100.8
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 40 (x -99.8, z -87.0)",
+     "x": -99.8,
+     "z": -87.0
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 49 (x -184.0, z -98.6)",
+     "x": -184.0,
+     "z": -98.6
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 41 (x -98.2, z -97.6)",
+     "x": -98.2,
+     "z": -97.6
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 36 (x -139.7, z -134.9)",
+     "x": -139.7,
+     "z": -134.9
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 37 (x -104.0, z -144.0)",
+     "x": -104.0,
+     "z": -144.0
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 63 (x -180.0, z -136.0)",
+     "x": -180.0,
+     "z": -136.0
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 55 (x -97.6, z -146.6)",
+     "x": -97.6,
+     "z": -146.6
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 92 (x 188.9, z -106.6)",
+     "x": 188.9,
+     "z": -106.6
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 65 (x 23.2, z -19.2)",
+     "x": 23.2,
+     "z": -19.2
+    },
+    {
+     "arg": "room:42",
+     "label": "Room arrival, point 64 (x -180.0, z -142.4)",
+     "x": -180.0,
+     "z": -142.4
+    },
+    {
+     "arg": "room:43",
+     "label": "Room arrival, point 69 (x 96.8, z -20.4)",
+     "x": 96.8,
+     "z": -20.35
+    },
+    {
+     "arg": "room:44",
+     "label": "Room arrival, point 67 (x 59.4, z -18.8)",
+     "x": 59.4,
+     "z": -18.8
+    },
+    {
+     "arg": "room:45",
+     "label": "Room arrival, point 70 (x 136.0, z -19.8)",
+     "x": 136.0,
+     "z": -19.8
+    },
+    {
+     "arg": "room:46",
+     "label": "Room arrival, point 68 (x 59.4, z -22.0)",
+     "x": 59.4,
+     "z": -22.0
+    }
+   ]
+  },
+  {
+   "id": "map7_s02",
+   "name": "Nowhere - Alessa vs. Dahlia cutscene",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map7_s01 (Nowhere)",
+     "x": 172.8,
+     "z": -20.0
+    },
+    {
+     "arg": "room:0",
+     "label": "Room arrival, point 13 (x -100.0, z -20.8)",
+     "x": -100.0,
+     "z": -20.8
+    },
+    {
+     "arg": "room:1",
+     "label": "Room arrival, point 5 (x -60.0, z -15.2)",
+     "x": -60.0,
+     "z": -15.2
+    },
+    {
+     "arg": "room:2",
+     "label": "Room arrival, point 16 (x -139.4, z -16.8)",
+     "x": -139.4,
+     "z": -16.8
+    },
+    {
+     "arg": "room:3",
+     "label": "Room arrival, point 6 (x -63.0, z -26.4)",
+     "x": -63.0,
+     "z": -26.4
+    },
+    {
+     "arg": "room:4",
+     "label": "Room arrival, point 17 (x -176.8, z -20.6)",
+     "x": -176.8,
+     "z": -20.6
+    },
+    {
+     "arg": "room:5",
+     "label": "Room arrival, point 7 (x -63.4, z -29.6)",
+     "x": -63.4,
+     "z": -29.6
+    },
+    {
+     "arg": "room:6",
+     "label": "Room arrival, point 18 (x -18.0, z -61.1)",
+     "x": -18.0,
+     "z": -61.1
+    },
+    {
+     "arg": "room:7",
+     "label": "Room arrival, point 8 (x -58.4, z -28.2)",
+     "x": -58.4,
+     "z": -28.2
+    },
+    {
+     "arg": "room:8",
+     "label": "Room arrival, point 19 (x -64.8, z -59.4)",
+     "x": -64.8,
+     "z": -59.4
+    },
+    {
+     "arg": "room:9",
+     "label": "Room arrival, point 9 (x -58.4, z -16.2)",
+     "x": -58.4,
+     "z": -16.2
+    },
+    {
+     "arg": "room:10",
+     "label": "Room arrival, point 30 (x -61.6, z -107.2)",
+     "x": -61.6,
+     "z": -107.2
+    },
+    {
+     "arg": "room:11",
+     "label": "Room arrival, point 10 (x -58.4, z -24.8)",
+     "x": -58.4,
+     "z": -24.8
+    },
+    {
+     "arg": "room:12",
+     "label": "Room arrival, point 12 (x -101.8, z -148.2)",
+     "x": -101.8,
+     "z": -148.2
+    },
+    {
+     "arg": "room:13",
+     "label": "Room arrival, point 13 (x -58.4, z -20.2)",
+     "x": -58.4,
+     "z": -20.2
+    },
+    {
+     "arg": "room:14",
+     "label": "Room arrival, point 71 (x 172.8, z -20.0)",
+     "x": 172.8,
+     "z": -20.0
+    },
+    {
+     "arg": "room:15",
+     "label": "Room arrival, point 12 (x -60.2, z -29.6)",
+     "x": -60.2,
+     "z": -29.6
+    },
+    {
+     "arg": "room:16",
+     "label": "Room arrival, point 26 (x -139.2, z -59.1)",
+     "x": -139.2,
+     "z": -59.1
+    },
+    {
+     "arg": "room:17",
+     "label": "Room arrival, point 21 (x -61.6, z -59.2)",
+     "x": -61.6,
+     "z": -59.2
+    },
+    {
+     "arg": "room:18",
+     "label": "Room arrival, point 27 (x -176.8, z -54.6)",
+     "x": -176.8,
+     "z": -54.6
+    },
+    {
+     "arg": "room:19",
+     "label": "Room arrival, point 25 (x -142.4, z -58.9)",
+     "x": -142.4,
+     "z": -58.9
+    },
+    {
+     "arg": "room:20",
+     "label": "Room arrival, point 29 (x -22.4, z -99.0)",
+     "x": -22.4,
+     "z": -99.05
+    },
+    {
+     "arg": "room:21",
+     "label": "Room arrival, point 28 (x -176.8, z -65.4)",
+     "x": -176.8,
+     "z": -65.4
+    },
+    {
+     "arg": "room:22",
+     "label": "Room arrival, point 39 (x -104.6, z -99.8)",
+     "x": -104.6,
+     "z": -99.8
+    },
+    {
+     "arg": "room:23",
+     "label": "Room arrival, point 31 (x -55.2, z -107.2)",
+     "x": -55.2,
+     "z": -107.2
+    },
+    {
+     "arg": "room:24",
+     "label": "Room arrival, point 51 (x -20.1, z -136.9)",
+     "x": -20.15,
+     "z": -136.9
+    },
+    {
+     "arg": "room:25",
+     "label": "Room arrival, point 32 (x -58.4, z -103.4)",
+     "x": -58.4,
+     "z": -103.4
+    },
+    {
+     "arg": "room:26",
+     "label": "Room arrival, point 52 (x -56.8, z -141.4)",
+     "x": -56.8,
+     "z": -141.4
+    },
+    {
+     "arg": "room:27",
+     "label": "Room arrival, point 33 (x -61.6, z -95.0)",
+     "x": -61.6,
+     "z": -95.0
+    },
+    {
+     "arg": "room:28",
+     "label": "Room arrival, point 48 (x -140.0, z -100.8)",
+     "x": -140.0,
+     "z": -100.8
+    },
+    {
+     "arg": "room:29",
+     "label": "Room arrival, point 40 (x -99.8, z -87.0)",
+     "x": -99.8,
+     "z": -87.0
+    },
+    {
+     "arg": "room:30",
+     "label": "Room arrival, point 49 (x -184.0, z -98.6)",
+     "x": -184.0,
+     "z": -98.6
+    },
+    {
+     "arg": "room:31",
+     "label": "Room arrival, point 41 (x -98.2, z -97.6)",
+     "x": -98.2,
+     "z": -97.6
+    },
+    {
+     "arg": "room:32",
+     "label": "Room arrival, point 32 (x -139.7, z -134.9)",
+     "x": -139.7,
+     "z": -134.9
+    },
+    {
+     "arg": "room:33",
+     "label": "Room arrival, point 33 (x -104.0, z -144.0)",
+     "x": -104.0,
+     "z": -144.0
+    },
+    {
+     "arg": "room:34",
+     "label": "Room arrival, point 63 (x -180.0, z -136.0)",
+     "x": -180.0,
+     "z": -136.0
+    },
+    {
+     "arg": "room:35",
+     "label": "Room arrival, point 55 (x -97.6, z -146.6)",
+     "x": -97.6,
+     "z": -146.6
+    },
+    {
+     "arg": "room:36",
+     "label": "Room arrival, point 92 (x 188.9, z -106.6)",
+     "x": 188.9,
+     "z": -106.6
+    },
+    {
+     "arg": "room:37",
+     "label": "Room arrival, point 65 (x 23.2, z -19.2)",
+     "x": 23.2,
+     "z": -19.2
+    },
+    {
+     "arg": "room:38",
+     "label": "Room arrival, point 64 (x -180.0, z -142.4)",
+     "x": -180.0,
+     "z": -142.4
+    },
+    {
+     "arg": "room:39",
+     "label": "Room arrival, point 69 (x 96.8, z -20.4)",
+     "x": 96.8,
+     "z": -20.35
+    },
+    {
+     "arg": "room:40",
+     "label": "Room arrival, point 67 (x 59.4, z -18.8)",
+     "x": 59.4,
+     "z": -18.8
+    },
+    {
+     "arg": "room:41",
+     "label": "Room arrival, point 70 (x 136.0, z -19.8)",
+     "x": 136.0,
+     "z": -19.8
+    },
+    {
+     "arg": "room:42",
+     "label": "Room arrival, point 68 (x 59.4, z -22.0)",
+     "x": 59.4,
+     "z": -22.0
+    },
+    {
+     "arg": "room:43",
+     "label": "Room arrival, point 78 (x 17.1, z -61.5)",
+     "x": 17.1,
+     "z": -61.55
+    },
+    {
+     "arg": "room:44",
+     "label": "Room arrival, point 72 (x 175.2, z -21.6)",
+     "x": 175.2,
+     "z": -21.6
+    },
+    {
+     "arg": "room:45",
+     "label": "Room arrival, point 79 (x 60.0, z -56.0)",
+     "x": 60.0,
+     "z": -56.0
+    },
+    {
+     "arg": "room:46",
+     "label": "Room arrival, point 73 (x 180.0, z -21.6)",
+     "x": 180.0,
+     "z": -21.6
+    },
+    {
+     "arg": "room:47",
+     "label": "Room arrival, point 82 (x 140.0, z -63.2)",
+     "x": 140.0,
+     "z": -63.2
+    },
+    {
+     "arg": "room:48",
+     "label": "Room arrival, point 74 (x 184.8, z -21.6)",
+     "x": 184.8,
+     "z": -21.6
+    },
+    {
+     "arg": "room:49",
+     "label": "Room arrival, point 83 (x 176.8, z -60.6)",
+     "x": 176.8,
+     "z": -60.6
+    },
+    {
+     "arg": "room:50",
+     "label": "Room arrival, point 75 (x 175.2, z -18.4)",
+     "x": 175.2,
+     "z": -18.4
+    },
+    {
+     "arg": "room:51",
+     "label": "Room arrival, point 84 (x 20.0, z -97.5)",
+     "x": 20.0,
+     "z": -97.5
+    },
+    {
+     "arg": "room:52",
+     "label": "Room arrival, point 76 (x 180.0, z -18.4)",
+     "x": 180.0,
+     "z": -18.4
+    },
+    {
+     "arg": "room:53",
+     "label": "Room arrival, point 85 (x 60.0, z -102.4)",
+     "x": 60.0,
+     "z": -102.4
+    },
+    {
+     "arg": "room:54",
+     "label": "Room arrival, point 77 (x 184.8, z -18.4)",
+     "x": 184.8,
+     "z": -18.4
+    },
+    {
+     "arg": "room:55",
+     "label": "Room arrival, point 81 (x 103.2, z -60.6)",
+     "x": 103.2,
+     "z": -60.6
+    },
+    {
+     "arg": "room:56",
+     "label": "Room arrival, point 80 (x 63.2, z -59.2)",
+     "x": 63.2,
+     "z": -59.2
+    },
+    {
+     "arg": "room:57",
+     "label": "Room arrival, point 87 (x 97.6, z -98.6)",
+     "x": 97.6,
+     "z": -98.6
+    },
+    {
+     "arg": "room:58",
+     "label": "Room arrival, point 86 (x 60.0, z -96.0)",
+     "x": 60.0,
+     "z": -96.0
+    },
+    {
+     "arg": "room:59",
+     "label": "Room arrival, point 211 (x -98.4, z -146.6)",
+     "x": -98.4,
+     "z": -146.6
+    },
+    {
+     "arg": "room:60",
+     "label": "Room arrival, point 22 (x -102.6, z -60.9)",
+     "x": -102.6,
+     "z": -60.9
+    },
+    {
+     "arg": "room:61",
+     "label": "Room arrival, point 140 (x -96.7, z -18.4)",
+     "x": -96.7,
+     "z": -18.4
+    },
+    {
+     "arg": "room:62",
+     "label": "Room arrival, point 141 (x -136.7, z -98.4)",
+     "x": -136.7,
+     "z": -98.4
+    },
+    {
+     "arg": "room:63",
+     "label": "Room arrival, point 142 (x 62.7, z -20.4)",
+     "x": 62.7,
+     "z": -20.4
+    }
+   ]
+  },
+  {
+   "id": "map7_s03",
+   "name": "Nowhere - final boss",
+   "usable": true,
+   "spawns": [
+    {
+     "arg": "default",
+     "label": "Map start"
+    },
+    {
+     "arg": "door:0",
+     "label": "Door from map7_s02 (Nowhere - Alessa vs. Dahlia cutscene)",
+     "x": 139.7,
+     "z": -101.1
+    }
+   ]
+  }
+ ]
+}

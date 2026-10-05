@@ -1860,6 +1860,20 @@ void func_800DD0CC(void) // 0x800DD0CC
 
     if (D_800DFB40 == NO_VALUE)
     {
+#ifdef SH_PC_PORT
+        /* The lighter's light is preset 10, which the pickup scene blends in
+         * fully; the flicker below only leans a few percent toward preset 6
+         * from whatever is current. A save made after the pickup (PC saves
+         * anywhere) loads with the room's own light current, so the lighter
+         * never came back: Harry walked the dark alley with no flame light and
+         * no shadow. Start from the lighter's state here; after the scene it
+         * already is, so this changes nothing there. The flame's sprite
+         * texture is loaded by the scene too: load it again (a white quad in
+         * the hand otherwise). */
+        GameFs_FlameGfxLoad();
+        Gfx_FogParametersSet(&g_SysWork.field_2388.field_1C[0], &MAP_EFFECTS_INFOS[10]);
+        Gfx_FogParametersSet(&g_SysWork.field_2388.field_1C[1], &MAP_EFFECTS_INFOS[10]);
+#endif
         Gfx_MapEffectsUpdate(6, 6, PrimitiveType_S32, &D_800DFB40, 0, Q12(100.0f));
         D_800DFB40 = 0;
     }

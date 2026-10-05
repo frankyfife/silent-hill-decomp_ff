@@ -27,6 +27,8 @@ void Pc_QuickOptions_InvalidateRows(void);
 
 void Pc_QuickOptions_Toggle(void);
 void Pc_QuickOptions_Close(void);
+/* Open on the page with this title (case-insensitive, '_' for spaces). */
+void Pc_QuickOptions_OpenPage(const char* title);
 
 /* Per-frame input while open (game thread). up/down/left/right are HELD
  * state (the overlay repeats them on its own clock); confirm/close/page are

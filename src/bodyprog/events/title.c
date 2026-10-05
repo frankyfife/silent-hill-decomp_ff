@@ -334,6 +334,17 @@ void GameState_MainMenu_Update(void) // 0x8003AB28
                 g_Controller0->clickedBtnFlags |= g_GameWorkPtr->config.controllerConfig.enter;
                 skipToGameStep                  = 2;
             }
+            /* -continue (pc_autoshot.c): pick Continue, i.e. load the newest
+             * save, as soon as the menu lists it (unattended tests). */
+            {
+                extern int g_PcAutoContinue;
+                if (g_PcAutoContinue && (g_MainMenu_VisibleEntryFlags & (1 << MainMenuEntry_Continue)))
+                {
+                    g_PcAutoContinue                = 0;
+                    g_MainMenu_SelectedEntry        = MainMenuEntry_Continue;
+                    g_Controller0->clickedBtnFlags |= g_GameWorkPtr->config.controllerConfig.enter;
+                }
+            }
 #endif
 
             if (g_Controller0->clickedBtnFlags & g_GameWorkPtr->config.controllerConfig.enter)
@@ -502,7 +513,8 @@ void GameState_MainMenu_Update(void) // 0x8003AB28
              * cannot override NORMAL on the frame the confirm is synthesised. */
             if (skipToGameStep == 2)
             {
-                newGameSelectedDifficultyIdx    = 1;
+                extern int Pc_LevelSelect_DifficultyIdx(int fallback);
+                newGameSelectedDifficultyIdx    = Pc_LevelSelect_DifficultyIdx(1);
                 g_Controller0->clickedBtnFlags |= g_GameWorkPtr->config.controllerConfig.enter;
                 skipToGameStep                  = 3;
             }
@@ -579,7 +591,13 @@ void GameState_MainMenu_Update(void) // 0x8003AB28
 
                 if (g_MainMenu_SelectedEntry == MainMenuEntry_Start)
                 {
+#ifdef SH_PC_PORT
+                    extern const s_MapPoint2d* Pc_LevelSelect_SpawnPoint(const s_MapPoint2d* fallback);
+                    extern void                Chara_PositionSet(s_MapPoint2d* mapPoint);
+                    Chara_PositionSet((s_MapPoint2d*)Pc_LevelSelect_SpawnPoint(&g_MapOverlayHdr.mapPoints[0]));
+#else
                     Chara_PositionSet(&g_MapOverlayHdr.mapPoints[0]);
+#endif
                 }
 
 #ifdef SH_PC_PORT

@@ -73,7 +73,7 @@ extern void        PcOpt_QuickViewReset(int mode);
 
 #define QO_GARBAGE  48
 #define QO_MAX_ROWS 16
-#define QO_PAGES    10
+#define QO_PAGES    15
 /* Every page lays out on the same row pitch -- the pitch QO_ROW_SLOTS rows
  * would get in the full-height panel -- and the panel shrinks to its rows.
  * Deriving the pitch from each page's own row count made the text a different
@@ -90,8 +90,8 @@ extern void        PcOpt_QuickViewReset(int mode);
 /* ROW_ACTION fires from Confirm/click ONLY -- unlike every other row kind,
  * Left/Right must not trigger it, or scrolling past "Reset View Settings"
  * with the arrows would undo the player's tuning. */
-enum { ROW_OPT = 0, ROW_EXTRA, ROW_PAGE, ROW_CLOSE, ROW_CHEAT, ROW_ACTION };
-enum { QO_A_VIEWRESET = 0, QO_A_KEYBINDS };
+enum { ROW_OPT = 0, ROW_EXTRA, ROW_PAGE, ROW_CLOSE, ROW_CHEAT, ROW_ACTION, ROW_FOG };
+enum { QO_A_VIEWRESET = 0, QO_A_KEYBINDS, QO_A_FOGRESET };
 
 typedef struct
 {
@@ -99,10 +99,10 @@ typedef struct
     const char* key;    /* ROW_OPT: config key looked up in options.c */
     int         extra;  /* ROW_EXTRA: QO_X_*; ROW_CHEAT: row index */
     const char* label;  /* ROW_EXTRA / ROW_PAGE / ROW_CLOSE display name */
-    int         cpage;  /* ROW_CHEAT: PC_CHEATS_PAGE_* */
+    int         cpage;  /* ROW_CHEAT: PC_CHEATS_PAGE_*; ROW_FOG: fog page (pc_fog_menu.c) */
 } QoRowDef;
 
-#define QO_IS_VALUE_ROW(k) ((k) == ROW_OPT || (k) == ROW_EXTRA || (k) == ROW_CHEAT)
+#define QO_IS_VALUE_ROW(k) ((k) == ROW_OPT || (k) == ROW_EXTRA || (k) == ROW_CHEAT || (k) == ROW_FOG)
 
 /* ROW_PAGE's label is only a placeholder: the row draws "Previous / Next" with
  * the neighbouring pages' names, which depend on where the page sits. */
@@ -347,7 +347,53 @@ static const QoRowDef* qo_cheat_page(int cpage, int actions, int* count)
     return s_cheatRows[cpage][actions];
 }
 
-enum { QO_PG_GFX1 = 0, QO_PG_GFX2, QO_PG_HUD, QO_PG_AUDIO, QO_PG_VIEW,
+/* The Fog pages mirror pc_fog_menu.c's two tables: value rows, then (on the
+ * second page) its reset as an action row. */
+extern int         Pc_FogMenu_Count(int page);
+extern int         Pc_FogMenu_IsAction(int page, int i);
+extern const char* Pc_FogMenu_Name(int page, int i);
+extern const char* Pc_FogMenu_Label(int page, int i, char* buf, int n);
+extern void        Pc_FogMenu_Adjust(int page, int i, int dir);
+extern void        Pc_FogMenu_Confirm(int page, int i);
+
+static QoRowDef s_fogRows[5][QO_MAX_ROWS];
+static int      s_fogRowCount[5];
+
+static const QoRowDef* qo_fog_page(int fpage, int* count)
+{
+    if (s_fogRowCount[fpage] == 0)
+    {
+        QoRowDef* out = s_fogRows[fpage];
+        int n = Pc_FogMenu_Count(fpage), i, k = 0;
+        for (i = 0; i < n && k < QO_MAX_ROWS - 2; i++)
+        {
+            if (Pc_FogMenu_IsAction(fpage, i))
+            {
+                out[k].kind  = ROW_ACTION;
+                out[k].key   = NULL;
+                out[k].extra = QO_A_FOGRESET;
+                out[k].label = Pc_FogMenu_Name(fpage, i);
+                out[k].cpage = fpage;
+            }
+            else
+            {
+                out[k].kind  = ROW_FOG;
+                out[k].key   = NULL;
+                out[k].extra = i;
+                out[k].label = NULL;
+                out[k].cpage = fpage;
+            }
+            k++;
+        }
+        out[k].kind = ROW_PAGE;  out[k].label = "Previous / Next"; k++;
+        out[k].kind = ROW_CLOSE; out[k].label = "Close";           k++;
+        s_fogRowCount[fpage] = k;
+    }
+    *count = s_fogRowCount[fpage];
+    return s_fogRows[fpage];
+}
+
+enum { QO_PG_GFX1 = 0, QO_PG_GFX2, QO_PG_FOG1, QO_PG_FOG2, QO_PG_FOG3, QO_PG_SKY, QO_PG_SHADOWS, QO_PG_HUD, QO_PG_AUDIO, QO_PG_VIEW,
        QO_PG_CHEATS1, QO_PG_CHEATS2, QO_PG_DEBUG1, QO_PG_DEBUG2, QO_PG_CONTROLS };
 
 #define QO_TABLE(t) (*count = (int)(sizeof(t) / sizeof((t)[0])), (t))
@@ -357,6 +403,11 @@ static const QoRowDef* qo_page_rows(int page, int* count)
     switch (page)
     {
         case QO_PG_GFX2:     return QO_TABLE(s_pageGfx2);
+        case QO_PG_FOG1:     return qo_fog_page(0, count);
+        case QO_PG_FOG2:     return qo_fog_page(1, count);
+        case QO_PG_FOG3:     return qo_fog_page(2, count);
+        case QO_PG_SKY:      return qo_fog_page(3, count);
+        case QO_PG_SHADOWS:  return qo_fog_page(4, count);
         case QO_PG_HUD:      return QO_TABLE(s_pageHud);
         case QO_PG_AUDIO:    return QO_TABLE(s_pageAudio);
         case QO_PG_VIEW:     return qo_view_page(count);
@@ -372,7 +423,7 @@ static const QoRowDef* qo_page_rows(int page, int* count)
 /* The title, and the Previous / Next row's destinations. No slashes in these:
  * the row already separates its two destinations with one. */
 static const char* const s_pageNames[QO_PAGES] = {
-    "Graphics", "Lighting & Effects", "HUD", "Audio", "View",
+    "Graphics", "Lighting & Effects", "Fog", "Fog Layers", "Fog Stages", "Sky Light", "Light Shadows", "HUD", "Audio", "View",
     "Cheats", "Cheat Actions", "Debug", "Debug Actions", "Controls" };
 
 /* ------------------------------------------------------------------ */
@@ -1339,6 +1390,8 @@ static void qo_row_name(const QoRowDef* r, char* out, int n)
     }
     else if (r->kind == ROW_CHEAT)
         src = Pc_LangQuick(Pc_Cheats_Name(r->cpage, r->extra));
+    else if (r->kind == ROW_FOG)
+        src = Pc_LangQuick(Pc_FogMenu_Name(r->cpage, r->extra));
     else
         src = Pc_LangQuick(r->label);
 
@@ -1372,6 +1425,10 @@ static void qo_row_value(const QoRowDef* r, char* out, int n)
     {
         snprintf(out, (size_t)n, "%s", Pc_Cheats_Label(r->cpage, r->extra, buf, (int)sizeof(buf)));
     }
+    else if (r->kind == ROW_FOG)
+    {
+        snprintf(out, (size_t)n, "%s", Pc_FogMenu_Label(r->cpage, r->extra, buf, (int)sizeof(buf)));
+    }
 }
 
 /* ------------------------------------------------------------------ */
@@ -1404,14 +1461,52 @@ int Pc_QuickOptions_ShowsMinimapRows(void)
     return 0;
 }
 
+/* The overlay reopens where it was left, page and row, also across runs
+ * (config keys quick_menu_page / quick_menu_row, written on close). */
+static int s_savedPage = -1;
+static int s_savedSel  = -1;
+
+void Pc_QuickOptions_ParseKey(const char* key, const char* value)
+{
+    if (strcmp(key, "quick_menu_page") == 0)
+        s_page = s_savedPage = atoi(value);
+    else if (strcmp(key, "quick_menu_row") == 0)
+        s_sel = s_savedSel = atoi(value);
+}
+
 static void qo_open(void)
 {
+    int             n;
+    const QoRowDef* rows;
+
     if (s_phase == QO_OPENING || s_phase == QO_SHOWN)
         return;
     s_phase      = QO_OPENING;
     s_phaseStart = SDL_GetTicks();
-    s_sel        = 0;
+    if (s_page < 0 || s_page >= QO_PAGES)
+        s_page = 0;
+    rows = qo_page_rows(s_page, &n);
+    if (s_sel < 0 || s_sel >= n || rows[s_sel].kind == ROW_CLOSE)
+        s_sel = 0;
     g_PcQuickOptionsActive = 1;
+}
+
+static void qo_save_position(void)
+{
+    char buf[12];
+
+    if (s_page != s_savedPage)
+    {
+        s_savedPage = s_page;
+        snprintf(buf, sizeof(buf), "%d", s_page);
+        PcConfig_SaveKeyValue("quick_menu_page", buf);
+    }
+    if (s_sel != s_savedSel)
+    {
+        s_savedSel = s_sel;
+        snprintf(buf, sizeof(buf), "%d", s_sel);
+        PcConfig_SaveKeyValue("quick_menu_row", buf);
+    }
 }
 
 void Pc_QuickOptions_Close(void)
@@ -1423,6 +1518,7 @@ void Pc_QuickOptions_Close(void)
      * menu's Update, so closing the menu under it left it on screen with
      * nothing able to close it. Whatever closes the menu closes it too. */
     Pc_BindPanel_Close();
+    qo_save_position();
     s_phase      = QO_CLOSING;
     s_phaseStart = SDL_GetTicks();
 }
@@ -1497,6 +1593,32 @@ static void qo_set_page(int page)
     if (s_sel < 0)  s_sel = 0;
 }
 
+/* Open straight on a page by its title (console `quickmenu <title>`, e.g. for
+ * unattended screenshots of a page). */
+void Pc_QuickOptions_OpenPage(const char* title)
+{
+    int p;
+
+    if (s_phase == QO_CLOSED || s_phase == QO_CLOSING)
+        qo_open();
+    for (p = 0; p < QO_PAGES; p++)
+    {
+        const char* a = s_pageNames[p];
+        const char* b = title;
+        while (*a && *b && (((*a | 0x20) == (*b | 0x20)) || (*a == ' ' && *b == '_')))
+        {
+            a++;
+            b++;
+        }
+        if (*a == 0 && *b == 0)
+        {
+            qo_set_page(p);
+            s_sel = 0;
+            return;
+        }
+    }
+}
+
 /* Paging from the nav row keeps the cursor on the new page's nav row. Pages
  * differ in length, so the same index could land on Close, and the next
  * confirm would shut the menu. */
@@ -1531,6 +1653,7 @@ static void qo_activate(const QoRowDef* r, int dir)
         }
         case ROW_EXTRA: PcOpt_QuickExtraAdjust(r->extra, dir); break;
         case ROW_CHEAT: Pc_Cheats_Adjust(r->cpage, r->extra, dir); break;
+        case ROW_FOG:   Pc_FogMenu_Adjust(r->cpage, r->extra, dir); break;
         case ROW_PAGE:  qo_beep(Sfx_MenuMove); qo_set_page(s_page + (dir < 0 ? -1 : +1)); qo_select_nav_row(); break;
         case ROW_CLOSE: qo_beep(Sfx_MenuCancel); Pc_QuickOptions_Close(); break;
         case ROW_ACTION: break; /* confirm-only; see the ROW_ACTION comment */
@@ -1813,6 +1936,17 @@ static void qo_confirm(const QoRowDef* r)
         {
             qo_beep(Sfx_MenuConfirm);
             Pc_BindPanel_Open();
+        }
+        else if (r->extra == QO_A_FOGRESET)
+        {
+            int i;
+
+            qo_beep(Sfx_MenuConfirm);
+            for (i = 0; i < Pc_FogMenu_Count(r->cpage); i++)
+            {
+                if (Pc_FogMenu_IsAction(r->cpage, i))
+                    Pc_FogMenu_Confirm(r->cpage, i);
+            }
         }
     }
     else

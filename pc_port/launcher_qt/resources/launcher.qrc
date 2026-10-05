@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>level_select.json</file>
+    </qresource>
+</RCC>

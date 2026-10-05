@@ -256,6 +256,25 @@ void vcGetNowCamPos(VECTOR3* cam_pos) // 0x80080EA8
 
 void vcReturnPreAutoCamWork(bool warp_f) // 0x80080ED0
 {
+#ifdef SH_PC_PORT
+    /* A scripted camera hands back with a glide (warp_f false) when Harry
+     * stands right where the scene expects him. A level-select start at
+     * another spawn point (launcher map + door/room) runs the same opening
+     * scene with Harry streets away, and the glide then crossed the town for
+     * seconds with Harry out of view, which read as a broken classic camera.
+     * Past 20 m nothing scripted means to glide: cut to him instead. */
+    if (!warp_f)
+    {
+        q19_12 dx = g_SysWork.playerWork.player.position.vx - vcWork.cam_pos.vx;
+        q19_12 dz = g_SysWork.playerWork.player.position.vz - vcWork.cam_pos.vz;
+
+        if (dx < -Q12(20.0f) || dx > Q12(20.0f) || dz < -Q12(20.0f) || dz > Q12(20.0f))
+        {
+            warp_f = true;
+        }
+    }
+#endif
+
     // Set warp flags if warping.
     if (warp_f)
     {

@@ -358,9 +358,14 @@ static int RoomIsFlashlightLit(void)
  * draw the flame billboard in Harry's right hand (preset 10, the intro alley).
  * On PSX the lighter is the flashlight's point light at a weaker strength, lit
  * from his torso and only towards the front, while the flame burns in his hand. */
+/* Console `lighterforce`: light as the lighter wherever the flashlight is on
+ * (testing the lighter's lighting and shadow without its scripted scene). */
+int g_PcLighterForce = 0;
+
 static int Pc_LighterActive(void)
 {
-    return (g_SysWork.field_2388.field_154.effectsInfo_0.field_0.s_field_0.field_0 & (1 << 3)) != 0;
+    return g_PcLighterForce ||
+           (g_SysWork.field_2388.field_154.effectsInfo_0.field_0.s_field_0.field_0 & (1 << 3)) != 0;
 }
 
 /* Where the flame billboard is drawn (func_8003E740's quad centre before its
@@ -377,6 +382,10 @@ static void Pc_LighterFlameViewPos(float out[3])
     out[1] = (float)(((mat.m[1][0] * x + mat.m[1][1] * y + mat.m[1][2] * z) >> 12) + mat.t[1]);
     out[2] = (float)(((mat.m[2][0] * x + mat.m[2][1] * y + mat.m[2][2] * z) >> 12) + mat.t[2]);
 }
+
+/* The flame level as last pushed; the holder light reads it while the next
+ * frame is built, without advancing the generator a second time. */
+static float s_pcLighterLevel = 1.0f;
 
 /* A flame does not burn at a constant level. Own generator rather than
  * Rng_Rand16: the game RNG drives the recorded demos and must not be advanced
@@ -403,12 +412,13 @@ static float Pc_LighterFlicker(void)
     }
 
     s_level += (s_target - s_level) * MIN(1.0f, dt * 20.0f);
+    s_pcLighterLevel = s_level;
     return s_level;
 }
 
-/* Set while Harry or his held item is being built. The beam starts at his chest
- * and points away from him, so under replacement he would be lit by nothing;
- * he keeps the PSX self-light instead and is kept out of the cone. */
+/* Set while Harry or his held item is being built. Under replacement he gets
+ * the holder light (Pc_FlashlightHolderLight) instead of the PSX self-light,
+ * and the cone reaches only the parts of him in front of the lens. */
 int g_PcFlashlightHolderDraw = 0;
 
 /* The per-pixel beam stands in for the PSX point light (field_0 == 1) exactly
@@ -418,23 +428,307 @@ int g_PcFlashlightHolderDraw = 0;
  * flashlightIntensity keeps the beam through the fade-out. Other light
  * sources that ride the same point light (scripted lamps) stay on the PSX
  * path; the lighter is taken over as an omni light (Pc_LighterActive).
- * Scripted shots stay PSX like before, which also keeps the shadow map from
- * being sampled where its pre-pass never ran. */
+ * Scripted shots take it too: replacement has no whole-scene dim to keep off
+ * an authored shot, and the shadow pre-pass now runs in cutscenes as well
+ * (game_main.c g_PsyX_ShadowsAllowed), so the beam, the lighter and their
+ * shadows no longer drop to the flat PSX light when a scene starts. */
 int Pc_FlashlightReplaceActive(void)
 {
     extern int g_PsyX_UsePerPixelFlashlight, g_PsyX_FlashlightReplace;
-    extern int Pc_ScriptOwnsShot(void);
 
     return g_PsyX_UsePerPixelFlashlight && g_PsyX_FlashlightReplace &&
            g_WorldEnvWork.field_0 == 1 && g_WorldEnvWork.field_54 > 0 &&
            (g_SysWork.field_2388.isFlashlightOn_15 || g_SysWork.field_2388.flashlightIntensity > 0 ||
-            Pc_LighterActive()) &&
-           !Pc_ScriptOwnsShot();
+            Pc_LighterActive());
 }
 
 static u8 Pc_FlashlightAmbientLight(void)
 {
     return MIN(g_WorldEnvWork.field_20 >> 5, (s32)g_WorldEnvWork.field_3);
+}
+
+/* Light on the flashlight's holder (Harry and his held item) under replacement.
+ * The PSX evaluates the chest point light per bone here; its divide saturates
+ * below ~0.75 m, so all of Harry lands at 0.9x..2.0x along lamp->bone plus
+ * 0.12x..0.31x on every face, while replacement leaves the world only ambient
+ * plus the cone: he glowed like a foreign body. What a chest lamp really
+ * leaves on its holder is the beam thrown back from what it hits (arriving
+ * along -beam) and some room scatter, both proportional to the beam. The beam
+ * itself reaches only what is in front of the lens (CharaFade -1, lit tail).
+ * Units: 1.0 = PSX light 128; S = field_54 x flashlight intensity. */
+float g_PcHolderFill   = 0.10f; /* all faces, x S x tint */
+float g_PcHolderBounce = 0.15f; /* faces toward the beam's target, x S x tint x N.L */
+
+static void Pc_FlashlightHolderLight(q19_12 alpha)
+{
+    extern int   g_PsyX_FlashlightFpsMode;
+    extern float g_PsyX_FlashlightIntensity, g_PsyX_FlashlightIntensityFps;
+    float        strength;
+    float        fill;
+    float        bounce;
+    s32          bk[3];
+    s32          peak;
+    s32          len;
+    s32          mag;
+    s32          lx;
+    s32          ly;
+    s32          lz;
+    s32          c;
+
+    strength = (float)g_WorldEnvWork.field_54 / 4096.0f *
+               (g_PsyX_FlashlightFpsMode ? g_PsyX_FlashlightIntensityFps : g_PsyX_FlashlightIntensity);
+    if (Pc_LighterActive())
+    {
+        strength *= s_pcLighterLevel;
+    }
+
+    fill = g_PcHolderFill * strength;
+    /* A flame has no beam to throw back; it lights him directly (omni, shader). */
+    bounce = Pc_LighterActive() ? 0.0f : g_PcHolderBounce * strength;
+
+    bk[0] = g_WorldEnvWork.field_24 + (s32)(fill * g_WorldEnvWork.worldTintColor.r + 0.5f);
+    bk[1] = g_WorldEnvWork.field_25 + (s32)(fill * g_WorldEnvWork.worldTintColor.g + 0.5f);
+    bk[2] = g_WorldEnvWork.field_26 + (s32)(fill * g_WorldEnvWork.worldTintColor.b + 0.5f);
+
+    /* Ambient plus flashlight stay under the room's light cap, as on PSX. */
+    peak = 0;
+    for (c = 0; c < 3; c++)
+    {
+        bk[c] = MIN(bk[c], (s32)g_WorldEnvWork.field_3);
+        peak  = MAX(peak, bk[c]);
+    }
+    bounce = MIN(bounce, (float)((s32)g_WorldEnvWork.field_3 - peak) / 128.0f);
+    bounce = MAX(bounce, 0.0f);
+
+    len = SquareRoot0(SQUARE((s32)g_WorldEnvWork.field_74.vx) + SQUARE((s32)g_WorldEnvWork.field_74.vy) +
+                      SQUARE((s32)g_WorldEnvWork.field_74.vz));
+    mag = Q12_MULT((s32)(bounce * 2048.0f), alpha);
+    lx  = 0;
+    ly  = 0;
+    lz  = 0;
+    if (len > 0 && mag > 0)
+    {
+        /* Travel direction of the light coming back FROM the beam's target. A
+         * Q12 light vector of length 2048 adds 1.0x (128) at N.L = 1. */
+        lx = -(s32)g_WorldEnvWork.field_74.vx * mag / len;
+        ly = -(s32)g_WorldEnvWork.field_74.vy * mag / len;
+        lz = -(s32)g_WorldEnvWork.field_74.vz * mag / len;
+    }
+
+    gte_SetLightSourceXY(lx, ly);
+    gte_SetLightSourceZ(lz);
+    SetBackColor(Q12_MULT(bk[0], alpha), Q12_MULT(bk[1], alpha), Q12_MULT(bk[2], alpha));
+}
+
+/* Volumetric fog (fog_mode 1, PsyX_render.cpp fogVolumetric). The renderer reads
+ * fragment positions from the GTE view-space capture, which has to be running
+ * while the frame's geometry is built -- so the mode is decided before the game
+ * update, and the camera/fog inputs are pushed once the world is drawn. */
+float g_PcFogVolumeScale = 1.0f;
+static float s_pcFogTime = 0.0f;
+extern float Pc_FogShapePush(float nearQ8, float lightGate, float playerY);
+
+void Pc_VolumetricFogFrameBegin(void)
+{
+    extern int g_PsyX_FogMode;
+
+    /* Cannot read this frame's isFogEnabled yet: map_effects sets it during the
+     * update and load_screen clears it, which left the first frame after every
+     * load on PSX fog. Pc_VolumetricFogPush drops the mode once the update has
+     * decided there is no fog; game_main drops it when no world was drawn. */
+    g_PsyX_FogMode = g_PcConfig.fogMode && g_GameWork.gameState == GameState_InGame;
+}
+
+/* The shots game_main.c clears to black on purpose (Alessa's doorway, the death
+ * scene): the fog backdrop must not paint over that void. */
+static int Pc_FogVoidIsBlack(void)
+{
+    return g_SysWork.sysState == SysState_GameOver ||
+           ((g_SysWork.sysFlags & SysFlag_CutsceneActive) &&
+            g_SavegamePtr != NULL && g_SavegamePtr->mapIdx == MapIdx_MAP3_S02);
+}
+
+static void Pc_VolumetricFogPush(void)
+{
+    extern int   g_PsyX_FogMode;
+    extern float g_PsyX_FogNear, g_PsyX_FogFloor, g_PsyX_FogVolume, g_PsyX_FogGroundY, g_PsyX_FogTime;
+    extern float g_PsyX_FogViewToWorld[16];
+    float        lum;
+    s32          c;
+    s32          r;
+
+    if (!g_PsyX_FogMode)
+    {
+        return;
+    }
+    if (!g_WorldEnvWork.isFogEnabled)
+    {
+        g_PsyX_FogMode = 0;
+        return;
+    }
+
+    /* GsWSMATRIX maps world to view (Q12 rotation, Q8 translation); the shader
+     * wants the inverse, column-major: R^T and -R^T t. */
+    for (c = 0; c < 3; c++)
+    {
+        float t = 0.0f;
+
+        for (r = 0; r < 3; r++)
+        {
+            g_PsyX_FogViewToWorld[c * 4 + r] = (float)GsWSMATRIX.m[c][r] / 4096.0f;
+            t += (float)GsWSMATRIX.m[r][c] / 4096.0f * (float)GsWSMATRIX.t[r];
+        }
+        g_PsyX_FogViewToWorld[c * 4 + 3] = 0.0f;
+        g_PsyX_FogViewToWorld[12 + c]    = -t;
+    }
+    g_PsyX_FogViewToWorld[15] = 1.0f;
+
+    if (g_DeltaTime > 0)
+    {
+        s_pcFogTime += (float)g_DeltaTime / 4096.0f;
+    }
+
+    /* Black "fog" is the darkness falloff of unlit rooms, not mist: drifting
+     * banks and a height layer would read as moving smoke there. */
+    lum = (0.299f * g_WorldEnvWork.fog.color.r + 0.587f * g_WorldEnvWork.fog.color.g +
+           0.114f * g_WorldEnvWork.fog.color.b) / 255.0f;
+    lum = (lum - 0.08f) / (0.25f - 0.08f);
+    lum = (lum < 0.0f) ? 0.0f : ((lum > 1.0f) ? 1.0f : lum);
+    lum = lum * lum * (3.0f - 2.0f * lum); /* light-fog gate: 0 darkness .. 1 mist */
+
+    g_PsyX_FogNear    = (float)g_WorldEnvWork.fog.nearDistance;
+    g_PsyX_FogFloor   = (float)g_WorldEnvWork.fog.intensity / 4096.0f;
+    g_PsyX_FogVolume  = lum * g_PcFogVolumeScale;
+    g_PsyX_FogGroundY = Pc_FogShapePush(g_PsyX_FogNear, lum,
+                                        (float)g_SysWork.playerWork.player.position.vy / 16.0f);
+    g_PsyX_FogTime    = s_pcFogTime;
+}
+
+/* View position of a vertex the CPU placed in screen space, at view depth z:
+ * the inverse of the GTE projection under the current offset and screen
+ * distance. Lets such prims take the per-pixel fog like projected geometry. */
+static void Pc_ScreenVertexViewPosSet(DVECTOR* xy, float z)
+{
+    extern void PsyX_SetVertexViewPos(void* xyAddr, float vx, float vy, float vz);
+    extern int  g_PsyX_UsePerPixelFlashlight, g_PsyX_FlashlightReplace;
+    s32         ofx;
+    s32         ofy;
+    float       h;
+
+    /* The older dim-and-overlay flashlight would dim these prims (they have a
+     * view position now) without any cone light reaching them (fade 1). They
+     * keep the PSX fog byte in that mode. */
+    if (g_PsyX_UsePerPixelFlashlight && !g_PsyX_FlashlightReplace)
+    {
+        return;
+    }
+
+    ReadGeomOffset(&ofx, &ofy);
+    h = (float)ReadGeomScreen();
+    if (h < 1.0f)
+    {
+        h = 1.0f;
+    }
+
+    PsyX_SetVertexViewPos(xy, (xy->vx - ofx) * z / h, (xy->vy - ofy) * z / h, z);
+}
+
+/* The fog backdrop quad as a far wall behind the drawn world, so the fragment
+ * shader fogs every void pixel exactly like the geometry in front of it (same
+ * ray samples) instead of leaving a flat colour. */
+static void Pc_FogBackdropPlace(POLY_G4* poly)
+{
+    const float z = 255.0f * 256.0f;
+
+    Pc_ScreenVertexViewPosSet((DVECTOR*)&poly->x0, z);
+    Pc_ScreenVertexViewPosSet((DVECTOR*)&poly->x1, z);
+    Pc_ScreenVertexViewPosSet((DVECTOR*)&poly->x2, z);
+    Pc_ScreenVertexViewPosSet((DVECTOR*)&poly->x3, z);
+}
+
+/* A billboard card (tree foliage, grass) on the PGXP path: the vanilla quad is
+ * built from the integer projection of its centre plus integer half-sizes, so
+ * with the world sub-pixel exact every card stepped on the 320x240 grid on its
+ * own and trees jittered against the street. Give all four corners the precise
+ * projection of the same centre (the transform RotTransPers just used) and
+ * sizes scaled by the true depth; one W for the whole card, which faces the
+ * camera. Under volumetric fog the corners also get their exact view
+ * positions. Returns 0 (caller keeps the card affine) without PGXP. */
+static int Pc_BillboardPrecise(POLY_GT4* poly, const MATRIX* mat, const SVECTOR* pos, s32 halfH, s32 halfW)
+{
+    extern int  g_PsxUsePgxp;
+    extern int  g_PsyX_FogMode;
+    extern int  g_PsyX_UsePerPixelFlashlight, g_PsyX_FlashlightReplace;
+    extern void PsyX_SetVertexPrecise(void* xyAddr, float sx, float sy, float w);
+    extern void PsyX_SetVertexViewPos(void* xyAddr, float vx, float vy, float vz);
+    DVECTOR*    xy[4];
+    float       v[3];
+    float       cx[4];
+    float       cy[4];
+    float       h;
+    float       a;
+    float       b;
+    float       sx;
+    float       sy;
+    s32         ofx;
+    s32         ofy;
+    s32         i;
+
+    if (!g_PsxUsePgxp)
+    {
+        return 0;
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+        v[i] = ((float)mat->m[i][0] * pos->vx + (float)mat->m[i][1] * pos->vy + (float)mat->m[i][2] * pos->vz) /
+                   4096.0f +
+               (float)mat->t[i];
+    }
+    if (v[2] < 16.0f)
+    {
+        return 0;
+    }
+
+    ReadGeomOffset(&ofx, &ofy);
+    h = (float)ReadGeomScreen();
+    if (h < 1.0f)
+    {
+        h = 1.0f;
+    }
+
+    sx = (float)ofx + v[0] * h / v[2];
+    sy = (float)ofy + v[1] * h / v[2];
+    a  = (float)halfH * h / v[2];
+    b  = (float)halfW * h / v[2];
+
+    /* setXY4 order of Gfx_BillboardDraw: top, right, left, bottom (centre). */
+    xy[0] = (DVECTOR*)&poly->x0;
+    xy[1] = (DVECTOR*)&poly->x1;
+    xy[2] = (DVECTOR*)&poly->x2;
+    xy[3] = (DVECTOR*)&poly->x3;
+    cx[0] = sx;
+    cy[0] = sy - 2.0f * a;
+    cx[1] = sx + b;
+    cy[1] = sy - a;
+    cx[2] = sx - b;
+    cy[2] = sy - a;
+    cx[3] = sx;
+    cy[3] = sy;
+
+    for (i = 0; i < 4; i++)
+    {
+        PsyX_SetVertexPrecise(xy[i], cx[i], cy[i], v[2]);
+    }
+
+    if (g_PsyX_FogMode && !(g_PsyX_UsePerPixelFlashlight && !g_PsyX_FlashlightReplace))
+    {
+        for (i = 0; i < 4; i++)
+        {
+            PsyX_SetVertexViewPos(xy[i], v[0] + (cx[i] - sx) * v[2] / h, v[1] + (cy[i] - sy) * v[2] / h, v[2]);
+        }
+    }
+    return 1;
 }
 #endif
 
@@ -579,6 +873,14 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
             g_PsyX_FlashlightDir[0] = (float)(s32)(((s64)GsWSMATRIX.m[0][0] * fdx + (s64)GsWSMATRIX.m[0][1] * fdy + (s64)GsWSMATRIX.m[0][2] * fdz) >> 12);
             g_PsyX_FlashlightDir[1] = (float)(s32)(((s64)GsWSMATRIX.m[1][0] * fdx + (s64)GsWSMATRIX.m[1][1] * fdy + (s64)GsWSMATRIX.m[1][2] * fdz) >> 12);
             g_PsyX_FlashlightDir[2] = (float)(s32)(((s64)GsWSMATRIX.m[2][0] * fdx + (s64)GsWSMATRIX.m[2][1] * fdy + (s64)GsWSMATRIX.m[2][2] * fdz) >> 12);
+            {
+                /* World vertical in view space: the shadow map's roll reference,
+                 * so its texel grid stays put while only the camera moves. */
+                extern float g_PsyX_ShadowUpView[3];
+                g_PsyX_ShadowUpView[0] = (float)GsWSMATRIX.m[0][1] / 4096.0f;
+                g_PsyX_ShadowUpView[1] = (float)GsWSMATRIX.m[1][1] / 4096.0f;
+                g_PsyX_ShadowUpView[2] = (float)GsWSMATRIX.m[2][1] / 4096.0f;
+            }
 
             /* Classic style matches the room-specific RGB matrix used by the
              * original flashlight (so console `fl` tints reach the cone too);
@@ -625,6 +927,13 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
         else
         {
             g_PsyX_FlashlightActive = 0;
+        }
+
+        /* The sky light's soft daytime shadows (pc_sky_light.c); off while
+         * the flashlight owns the shadow map. */
+        {
+            extern void Pc_SkyLightPush(int flashlightActive);
+            Pc_SkyLightPush(g_PsyX_FlashlightActive);
         }
     }
 #endif
@@ -708,9 +1017,21 @@ void Gfx_2dEffectsDraw(void) // 0x800550D0
          * uniform across the full window.  At 1920x1080 margin ≈ 53 PSX
          * units, requiring halfW ≈ 213 instead of the original 180. */
         {
-            const s16 halfW = Pc_OverlayQuadHalfW();
-            const s16 halfH = Pc_OverlayQuadHalfH();
+            extern int g_PsyX_FogMode;
+            const s16  halfW = Pc_OverlayQuadHalfW();
+            const s16  halfH = Pc_OverlayQuadHalfH();
             setXY4(poly, -halfW, -halfH, halfW, -halfH, -halfW, halfH, halfW, halfH);
+
+            /* Under volumetric fog this quad IS the void: opaque, and fogged
+             * per pixel like a wall behind everything. Half-blended over the
+             * flat clear it would carry only half the fog's variation and let
+             * fully fogged silhouettes show against it. */
+            Pc_VolumetricFogPush();
+            if (g_PsyX_FogMode && !Pc_FogVoidIsBlack())
+            {
+                setSemiTrans(poly, false);
+                Pc_FogBackdropPlace(poly);
+            }
         }
 #else
         setXY4(poly,
@@ -4324,9 +4645,15 @@ void func_8005A478(s_GteScratchData* scratchData, q19_12 alpha) // 0x8005A478
     s32 temp_s2_neg;
 
 #ifdef SH_PC_PORT
-    /* Exactly the result of the PSX path below at zero light strength: no
-     * directional term and no light-driven back-colour boost. */
-    if (Pc_FlashlightReplaceActive() && !g_PcFlashlightHolderDraw)
+    if (Pc_FlashlightReplaceActive() && g_PcFlashlightHolderDraw)
+    {
+        Pc_FlashlightHolderLight(alpha);
+        return;
+    }
+
+    /* Everyone else: exactly the result of the PSX path below at zero light
+     * strength, no directional term and no light-driven back-colour boost. */
+    if (Pc_FlashlightReplaceActive())
     {
         gte_SetLightSourceXY(0, 0);
         gte_SetLightSourceZ(0);
@@ -5493,12 +5820,34 @@ void Gfx_BillboardDraw(s32 arg0, q19_12 posX, q19_12 posY, q19_12 posZ, GsOT* ot
                 }
                 poly_gt4->pad2 = poly_gt4->p1; /* v0 fog (uniform billboard) */
 
+                /* Volumetric fog: a camera-facing card at its centre's depth,
+                 * which is exactly what the GTE would have reported for it. */
+                const int precise = Pc_BillboardPrecise(poly_gt4, &matrix_sp18[0], (SVECTOR*)&curPtr->position.vx,
+                                                        curPtr->field_8, curPtr->field_6);
+                {
+                    extern int g_PsyX_FogMode;
+                    if (g_PsyX_FogMode && !precise)
+                    {
+                        const float z = (float)(temp_v0_2 << 2);
+                        Pc_ScreenVertexViewPosSet((DVECTOR*)&poly_gt4->x0, z);
+                        Pc_ScreenVertexViewPosSet((DVECTOR*)&poly_gt4->x1, z);
+                        Pc_ScreenVertexViewPosSet((DVECTOR*)&poly_gt4->x2, z);
+                        Pc_ScreenVertexViewPosSet((DVECTOR*)&poly_gt4->x3, z);
+                    }
+                }
+
                 /* PGXP: billboard corners are built in screen space from the one
                  * projected centre (field_1C) — the 4th vertex IS that centre, so
                  * with PGXP it alone matches the ring (centre W) while the other
                  * corners go affine, warping the quad ("tree-foliage spikes").
-                 * Billboards are camera-facing flat quads, so affine is correct. */
-                PsyX_SetNextPrimAffine();
+                 * Pc_BillboardPrecise gives all four corners the sub-pixel
+                 * projection instead; without it the card stays affine, on the
+                 * 320x240 grid -- each foliage card then stepped on its own and
+                 * trees jittered against the smoothly moving street. */
+                if (!precise)
+                {
+                    PsyX_SetNextPrimAffine();
+                }
                 addPrim(&ot_arg4->org[MIN(temp_v0_2 >> arg5, ORDERING_TABLE_SIZE - 1)], poly_gt4);
                 poly_gt4++;
             }

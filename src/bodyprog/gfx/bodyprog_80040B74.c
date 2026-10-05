@@ -1694,8 +1694,10 @@ s32 Map_ChunkLoad(s_MapTerrain* map, q19_12 posX0, q19_12 posZ0, q19_12 posX1, q
      * budget the local room is sized for -- the room's pages get evicted by
      * everything else being pulled in, and the world draws UNTEXTURED. Harry is
      * pinned while flying, so streaming the ordinary gameplay window around him
-     * is both correct and stable, and it is what the camera used to do. */
-    s32 wideScan = g_DebugCamEnabled && Pc_WholeMapDrawActive();
+     * is both correct and stable, and it is what the camera used to do.
+     * whole_map_exteriors in normal play (quick options "Exterior Map: Whole
+     * Map") streams the wide window too: that mode is what it is for. */
+    s32 wideScan = Pc_WholeMapDrawActive();
     s32 scanMin = wideScan ? -4 : (map->isExterior ? -1 : -2);
     s32 scanMax = wideScan ? 5 : (map->isExterior ? 1 : 2);
     s32 loadsThisFrame = 0;
@@ -2122,7 +2124,11 @@ int Pc_WholeMapDrawActive(void)
     s32 pcx;
     s32 pcz;
 
-    if (!(g_PcConfig.wholeMapExteriors && g_PcConfig.preloadChunks &&
+    /* The free camera always flies over the whole town on exteriors: what it
+     * is for is looking around, and the streamed window left it staring at
+     * untextured gaps. Same gates otherwise (preload, resident textures, the
+     * player's cell outdoors so hosted interiors never mass-load). */
+    if (!((g_PcConfig.wholeMapExteriors || g_DebugCamEnabled) && g_PcConfig.preloadChunks &&
           g_PcConfig.residentTextures && g_Map.isExterior))
     {
         return 0;
@@ -2139,6 +2145,73 @@ int Pc_WholeMapDrawActive(void)
     pcz = FLOOR_TO_STEP(Q12_TO_Q8(g_SysWork.playerWork.player.position.vz), Q12_TO_Q8(CHUNK_CELL_SIZE));
 
     return Pc_WholeMapCellOutdoor(pcx, pcz);
+}
+
+/* The player stands in an outdoor cell of an exterior map (the sky light,
+ * pc_sky_light.c: the open sky is over him, not a ceiling). */
+int Pc_PlayerCellOutdoor(void)
+{
+    s32 pcx;
+    s32 pcz;
+
+    if (!g_Map.isExterior)
+    {
+        return 0;
+    }
+    pcx = FLOOR_TO_STEP(Q12_TO_Q8(g_SysWork.playerWork.player.position.vx), Q12_TO_Q8(CHUNK_CELL_SIZE));
+    pcz = FLOOR_TO_STEP(Q12_TO_Q8(g_SysWork.playerWork.player.position.vz), Q12_TO_Q8(CHUNK_CELL_SIZE));
+    return Pc_WholeMapCellOutdoor(pcx, pcz);
+}
+
+/* exterior_full_draw: the bounded form of whole_map_exteriors, for normal play.
+ * On exteriors the vanilla release-far / claim-near texture loop IS the draw
+ * distance (an untextured chunk fails the draw gate): whole 40 m cells
+ * appeared and vanished 16-56 m away as Harry moved, ran or turned, which the
+ * PSX fog (full at ~13.5 m) hid and a lighter fog does not. Here every outdoor
+ * cell keeps its textures once claimed (staggered, nearest-first, like the
+ * whole-map mode), and drawing is decided by distance instead: everything
+ * whose cell lies within the per-poly draw reach of the CAMERA draws. The fog
+ * reaches exactly the fog colour short of that reach (pc_fog_shape.c), so
+ * the edge is never seen. Same outdoor-cell classification as the whole-map
+ * mode, so hosted interiors (the Levin house) never join the street draw. */
+int Pc_ExteriorFullDrawActive(void)
+{
+    if (!g_PcConfig.exteriorFullDraw || g_PcConfig.wholeMapExteriors)
+    {
+        return 0;
+    }
+    if (!(g_PcConfig.preloadChunks && g_PcConfig.residentTextures && g_Map.isExterior))
+    {
+        return 0;
+    }
+    {
+        s32 pcx = FLOOR_TO_STEP(Q12_TO_Q8(g_SysWork.playerWork.player.position.vx), Q12_TO_Q8(CHUNK_CELL_SIZE));
+        s32 pcz = FLOOR_TO_STEP(Q12_TO_Q8(g_SysWork.playerWork.player.position.vz), Q12_TO_Q8(CHUNK_CELL_SIZE));
+
+        return Pc_WholeMapCellOutdoor(pcx, pcz);
+    }
+}
+
+/* The draw reach in Q8: the per-poly far cap (SH_FAR_BASE << 3 = 15584 at
+ * draw_distance_pct 100, ~61 m). Nothing past it draws anyway. */
+static s32 Pc_ExteriorDrawReach(void)
+{
+    s32 pct = (g_PcConfig.drawDistancePct <= 0) ? 100 : g_PcConfig.drawDistancePct;
+
+    return ((0x79C << 3) * pct) / 100;
+}
+
+/* Camera position in world XZ (Q8): GsWSMATRIX maps world to view, so the eye
+ * is -R^T t. */
+static void Pc_CameraWorldXZ(s32* outX, s32* outZ)
+{
+    s64 x = (s64)GsWSMATRIX.m[0][0] * GsWSMATRIX.t[0] + (s64)GsWSMATRIX.m[1][0] * GsWSMATRIX.t[1] +
+            (s64)GsWSMATRIX.m[2][0] * GsWSMATRIX.t[2];
+    s64 z = (s64)GsWSMATRIX.m[0][2] * GsWSMATRIX.t[0] + (s64)GsWSMATRIX.m[1][2] * GsWSMATRIX.t[1] +
+            (s64)GsWSMATRIX.m[2][2] * GsWSMATRIX.t[2];
+
+    *outX = (s32)(-x >> 12);
+    *outZ = (s32)(-z >> 12);
 }
 #endif
 
@@ -2188,7 +2261,8 @@ void Ipd_ChunkMaterialsApply(s_MapTerrain* map) // 0x800433B8
      *   (memory exhaustion during the Levin-house save load). A few first-time
      *   claims per frame, nearest first, spreads the cost and lets the pack
      *   byte budget (fsqueue_3.c) favor what is close to the player. */
-    if ((!g_Map.isExterior && g_PcConfig.residentTextures) || Pc_WholeMapDrawActive())
+    if ((!g_Map.isExterior && g_PcConfig.residentTextures) || Pc_WholeMapDrawActive() ||
+        Pc_ExteriorFullDrawActive())
     {
         enum { PC_WM_CLAIMS_PER_FRAME = 3 };
         s_Chunk* newClaims[PC_WM_CLAIMS_PER_FRAME];
@@ -2777,11 +2851,19 @@ void Ipd_ChunkCheckDraw(GsOT* ot, s32 arg1) // 0x80043A24
          * PsyX_GTE.cpp). Scoped to this world-chunk loop so only the map geometry
          * takes the far path — characters/particles/HUD keep the exact PSX path. */
         int wmFar = Pc_WholeMapDrawActive();
-        float wmConeSlope = wmFar ? Pc_WholeMapConeSlope() : 0.0f;
+        int exFull = !wmFar && Pc_ExteriorFullDrawActive();
+        float wmConeSlope = (wmFar || exFull) ? Pc_WholeMapConeSlope() : 0.0f;
+        s32 exReach = exFull ? Pc_ExteriorDrawReach() : 0;
+        s32 exCamX = 0;
+        s32 exCamZ = 0;
         s_Chunk* wmChunks[PC_MAX_IPD_CHUNKS];
         s32      wmViewZ[PC_MAX_IPD_CHUNKS];
         s32      wmCount = 0;
         g_PsxWholeMapFar = wmFar;
+        if (exFull)
+        {
+            Pc_CameraWorldXZ(&exCamX, &exCamZ);
+        }
 #endif
     for (; curChunk < &g_Map.activeChunks[g_Map.activeChunkCount]; curChunk++)
     {
@@ -2813,6 +2895,17 @@ void Ipd_ChunkCheckDraw(GsOT* ot, s32 arg1) // 0x80043A24
                 wmChunks[wmCount] = curChunk;
                 wmViewZ[wmCount]  = Pc_WholeMapCellViewZ(curChunk->cellX, curChunk->cellZ);
                 wmCount++;
+                continue;
+            }
+            /* Bounded mode: chunks in the vanilla window draw as always; other
+             * textured chunks draw when they are outdoor cells within the draw
+             * reach of the camera and inside the view cone. */
+            if (exFull && curChunk->paddedDistanceToEdge0 > Q12(0.0f) &&
+                (!Pc_WholeMapCellOutdoor(curChunk->cellX, curChunk->cellZ) ||
+                 Ipd_DistanceToEdgeGet(exCamX, exCamZ, curChunk->cellX, curChunk->cellZ) > exReach ||
+                 Pc_WholeMapChunkCulled(curChunk->cellX, curChunk->cellZ, wmConeSlope)))
+            {
+                culledChunks++;
                 continue;
             }
 #endif
@@ -2877,14 +2970,14 @@ void Ipd_ChunkCheckDraw(GsOT* ot, s32 arg1) // 0x80043A24
     /* TEMP [WHOLEMAP] probe (remove when the whole-town report closes): with
      * the mode active, confirm every chunk actually submits — separates a
      * residual chunk gate from the GTE far-projection limit. */
-    if (g_Map.isExterior && g_PcConfig.wholeMapExteriors)
+    if (g_Map.isExterior && (g_PcConfig.wholeMapExteriors || g_PcConfig.exteriorFullDraw))
     {
         static u32 s_wmLogMs = 0;
         if ((SDL_GetTicks() - s_wmLogMs) > 2000)
         {
             s_wmLogMs = SDL_GetTicks();
-            SH_DBG("[WHOLEMAP] active=%d preload=%d resident=%d fog=%d roomIdx=%d total=%d loaded=%d drawn=%d culled=%d",
-                   Pc_WholeMapDrawActive(), g_PcConfig.preloadChunks, g_PcConfig.residentTextures,
+            SH_DBG("[WHOLEMAP] active=%d extfull=%d reach=%d preload=%d resident=%d fog=%d roomIdx=%d total=%d loaded=%d drawn=%d culled=%d",
+                   Pc_WholeMapDrawActive(), exFull, (int)exReach, g_PcConfig.preloadChunks, g_PcConfig.residentTextures,
                    (int)g_WorldEnvWork.isFogEnabled, (int)g_SavegamePtr->mapRoomIdx,
                    totalChunks, loadedChunks, drawCount, culledChunks);
         }

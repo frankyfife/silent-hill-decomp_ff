@@ -46,6 +46,7 @@
 #include "bodyprog/savegame.h"
 #include "bodyprog/item_screens.h" /* GameEndingFlag_Ufo (HyperBlaster give-unlock) */
 #include "bodyprog/screen/screen_fade.h"
+#include "bodyprog/gfx/map_effects.h" /* MAPFX */
 #include "bodyprog/sound/sound_system.h" /* AMBSFX sweep: s_VabInfo / Sd_PlaySfx */
 #include "bodyprog/sound/sfx_id_enum.h"
 #include "sh_log.h"
@@ -580,7 +581,8 @@ static const char* const DEBUG_PAGE2[] = {
     " Num *        free camera on/off (also a Quick Options row)",
     " Free camera: mouse look, W/A/S/D move, Space/C up/down,",
     "              Shift fast, Ctrl slow. Fog starts off so the",
-    "              world is visible outdoors; Num . toggles it.",
+    "              world is visible outdoors; G (or Num .)",
+    "              toggles it. Outdoors it shows the whole town.",
     " Num .        log Harry position (+ fog toggle in free cam)",
     " Num 3        rescue teleport after falling through a floor",
     "The old camera-nudge keys are gone; FPS eye tuning moved to",
@@ -1253,6 +1255,33 @@ static void cmd_goto(void)
     cprintf("Harry moved to %s", what);
 }
 
+/* setpos <x> <z> [yaw deg] -- DEBUG: put Harry at world metres x, z on the
+ * ground there (for testing a spot the story only reaches later). */
+static void cmd_setpos(const char* arg)
+{
+    s_SubCharacter*    hr = &g_SysWork.playerWork.player;
+    s_CollisionSurface surf;
+    float              x, z, yaw = -1.0f;
+    s32                tx, tz;
+
+    if (sscanf(arg, "%f %f %f", &x, &z, &yaw) < 2) {
+        cprintf("setpos <x> <z> [yaw] - Harry at %.2f %.2f",
+                hr->position.vx / 4096.0f, hr->position.vz / 4096.0f);
+        return;
+    }
+    tx = (s32)(x * 4096.0f);
+    tz = (s32)(z * 4096.0f);
+    Collision_SurfaceGet(&surf, tx, tz);
+    hr->position.vx                    = tx;
+    hr->position.vz                    = tz;
+    hr->position.vy                    = surf.groundHeight;
+    hr->properties.player.groundHeight = surf.groundHeight;
+    hr->fallSpeed                      = 0;
+    if (yaw >= 0.0f)
+        hr->rotation.vy = (s16)((s32)(yaw / 360.0f * 4096.0f) & 0xFFF);
+    cprintf("Harry at %.2f %.2f", x, z);
+}
+
 static void cmd_bring(void)
 {
     char            what[64];
@@ -1433,6 +1462,22 @@ void Pc_ConsoleExec(const char* line)
         cmd_info();
     } else if (strcmp(cmd, "GOTO") == 0) {
         cmd_goto();
+    } else if (strcmp(cmd, "MAPFX") == 0) {
+        /* DEBUG: mapfx <preset> -- apply environment light preset (MAP_EFFECTS_INFOS). */
+        static s32 s_mapfxVal = Q12(4.0f);
+        int idx = atoi(arg);
+        if (idx < 0 || idx > 20) { cprintf("mapfx 0..20"); }
+        else {
+            Gfx_MapEffectsUpdate(idx, idx, PrimitiveType_S32, &s_mapfxVal, 0, Q12(100.0f));
+            cprintf("map effects preset %d", idx);
+        }
+    } else if (strcmp(cmd, "SHADOWDUMP") == 0) {
+        /* DEBUG: write the next shadow map to shadow_map.f32 (+ shadow_raw.f32). */
+        extern int g_PsyX_ShadowDumpRequest;
+        g_PsyX_ShadowDumpRequest = 1;
+        cprintf("shadow map dump armed");
+    } else if (strcmp(cmd, "SETPOS") == 0) {
+        cmd_setpos(arg);
     } else if (strcmp(cmd, "BRING") == 0) {
         cmd_bring();
     } else if (strcmp(cmd, "FREEZE") == 0) {
@@ -1528,7 +1573,34 @@ void Pc_ConsoleExec(const char* line)
         int on = (arg[0] == '1') ? 1 : (arg[0] == '0') ? 0 : !g_DebugCamEnabled;
         Pc_FreeCam_Set(on);
         cprintf("free camera %s%s", g_DebugCamEnabled ? "ON" : "OFF",
-                g_DebugCamEnabled ? " - mouse look, WASD, Space/C, Shift fast" : "");
+                g_DebugCamEnabled ? " - mouse look, WASD, Space/C, Shift fast, G fog" : "");
+    } else if (strcmp(cmd, "QUICKMENU") == 0) {
+        /* quickmenu <page title> -- open the quick options on that page
+         * (fog, fog_stages, graphics, ...). */
+        extern void Pc_QuickOptions_OpenPage(const char* title);
+        Pc_QuickOptions_OpenPage(arg);
+    } else if (strcmp(cmd, "LIGHTERFORCE") == 0) {
+        /* lighterforce 0|1 -- DEBUG: light as the lighter wherever the
+         * flashlight is on (its omni light and shadow; no flame sprite). */
+        extern int g_PcLighterForce;
+        if (arg[0] == '1') g_PcLighterForce = 1;
+        else if (arg[0] == '0') g_PcLighterForce = 0;
+        else g_PcLighterForce = !g_PcLighterForce;
+        cprintf("lighter light forced: %s", g_PcLighterForce ? "ON" : "OFF");
+    } else if (strcmp(cmd, "FREECAMPAUSE") == 0) {
+        /* freecampause 0|1 -- the free camera freezes the game (default 1). */
+        extern int g_PcFreeCamPause;
+        if (arg[0] == '1') g_PcFreeCamPause = 1;
+        else if (arg[0] == '0') g_PcFreeCamPause = 0;
+        else g_PcFreeCamPause = !g_PcFreeCamPause;
+        cprintf("free camera pauses the game: %s", g_PcFreeCamPause ? "ON" : "OFF");
+    } else if (strcmp(cmd, "FREECAMFOG") == 0) {
+        /* freecamfog 0|1 -- fog in the free camera (G while flying). */
+        extern int g_DebugFogDisabled;
+        if (arg[0] == '1') g_DebugFogDisabled = 0;
+        else if (arg[0] == '0') g_DebugFogDisabled = 1;
+        else g_DebugFogDisabled = !g_DebugFogDisabled;
+        cprintf("free camera fog %s", g_DebugFogDisabled ? "OFF" : "ON");
     } else if (strcmp(cmd, "COLLVIS") == 0) {
         extern int g_CollVisEnabled;
         g_CollVisEnabled = (arg[0] == '1') ? 1 : (arg[0] == '0') ? 0 : !g_CollVisEnabled;
@@ -1733,6 +1805,115 @@ void Pc_ConsoleExec(const char* line)
         extern float g_PsyX_FogStrength;
         if (arg[0]) g_PsyX_FogStrength = (float)atof(arg);
         cprintf("world fog strength: %.2f (1.0=native PC fog; >1 deepens toward PSX)", g_PsyX_FogStrength);
+    } else if (strcmp(cmd, "FOGMODE") == 0) {
+        /* fogmode 0|1 -- 0 = PSX per-vertex fog, 1 = volumetric per-pixel fog. */
+        if (arg[0] == '1') g_PcConfig.fogMode = 1;
+        else if (arg[0] == '0') g_PcConfig.fogMode = 0;
+        else if (arg[0] == '\0') g_PcConfig.fogMode = !g_PcConfig.fogMode;
+        else { cprintf("usage: fogmode [0|1]"); return; }
+        PcConfig_SaveKeyValue("fog_mode", g_PcConfig.fogMode ? "1" : "0");
+        cprintf("fog: %s", g_PcConfig.fogMode ? "volumetric" : "PSX");
+    } else if (strcmp(cmd, "FOGVOL") == 0) {
+        /* fogvol <0..2> -- scales the volumetric shaping (height layer, drifting
+         * banks, mist tint); 0 leaves plain per-pixel fog. Live tuning only. */
+        extern float g_PcFogVolumeScale;
+        if (arg[0]) {
+            float v = (float)atof(arg);
+            g_PcFogVolumeScale = (v < 0.0f) ? 0.0f : ((v > 2.0f) ? 2.0f : v);
+        }
+        cprintf("volumetric fog shaping: %.2f (1 = default)", g_PcFogVolumeScale);
+    } else if (strcmp(cmd, "FOGPROBE") == 0) {
+        /* fogprobe 0|1 -- world prims the volumetric fog cannot place (no view
+         * position for every vertex) render magenta. Coverage diagnostic. */
+        extern int g_PsyX_FogProbe;
+        if (arg[0] == '1') g_PsyX_FogProbe = 1;
+        else if (arg[0] == '0') g_PsyX_FogProbe = 0;
+        else g_PsyX_FogProbe = !g_PsyX_FogProbe;
+        cprintf("fog probe: %s", g_PsyX_FogProbe ? "ON (magenta = PSX fog fallback)" : "OFF");
+    } else if (strcmp(cmd, "FOGWISPS") == 0) {
+        /* fogwisps <0..2> -- drifting-mist strength (pc_fog_shape.c); saved. */
+        if (arg[0]) {
+            char buf[16];
+            float v = (float)atof(arg);
+            g_PcConfig.fogWisps = (v < 0.0f) ? 0.0f : ((v > 2.0f) ? 2.0f : v);
+            snprintf(buf, sizeof(buf), "%.2f", g_PcConfig.fogWisps);
+            PcConfig_SaveKeyValue("fog_wisps", buf);
+        }
+        cprintf("fog wisps: %.2f (0 = smooth per-pixel fog, 1 = default, 2 = max)", g_PcConfig.fogWisps);
+    } else if (strcmp(cmd, "FOGCONTRAST") == 0) {
+        extern float g_PcFogContrast;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogContrast = (v < 0.0f) ? 0.0f : ((v > 0.95f) ? 0.95f : v); }
+        cprintf("fog wisp density contrast: %.2f (0.45 default, 0..0.95)", g_PcFogContrast);
+    } else if (strcmp(cmd, "FOGGLOW") == 0) {
+        extern float g_PcFogGlow;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogGlow = (v < 0.0f) ? 0.0f : ((v > 0.5f) ? 0.5f : v); }
+        cprintf("fog mist brightness contrast: %.2f (0.08 default, 0..0.5)", g_PcFogGlow);
+    } else if (strcmp(cmd, "FOGLIT") == 0) {
+        extern float g_PcFogLit;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogLit = (v < 0.0f) ? 0.0f : ((v > 0.5f) ? 0.5f : v); }
+        cprintf("fog wisp edge lighting: %.2f (0.22 default, 0..0.5)", g_PcFogLit);
+    } else if (strcmp(cmd, "FOGGROUND") == 0) {
+        /* fogground <density 0..1.5> [height 0.2..4 m] */
+        extern float g_PcFogGround, g_PcFogGroundH;
+        if (arg[0]) {
+            float h;
+            float v = (float)atof(arg);
+            g_PcFogGround = (v < 0.0f) ? 0.0f : ((v > 4.0f) ? 4.0f : v);
+            if (sscanf(arg, "%*f %f", &h) == 1)
+                g_PcFogGroundH = (h < 0.1f) ? 0.1f : ((h > 2.0f) ? 2.0f : h);
+        }
+        cprintf("ground mist: density %.2f x street fog, scale height %.2f m (1.6 / 0.6 default)", g_PcFogGround,
+                g_PcFogGroundH);
+    } else if (strcmp(cmd, "FOGSIZE") == 0) {
+        extern float g_PcFogWispSize;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogWispSize = (v < 2.0f) ? 2.0f : ((v > 40.0f) ? 40.0f : v); }
+        cprintf("fog wisp length: %.1f m along the wind (17 default; flat layers)", g_PcFogWispSize);
+    } else if (strcmp(cmd, "FOGWIND") == 0) {
+        /* fogwind <m/s 0..3> [snow-wind share 0..1] */
+        extern float g_PcFogWind, g_PcFogWindSnow;
+        if (arg[0]) {
+            float sw;
+            float v = (float)atof(arg);
+            g_PcFogWind = (v < 0.0f) ? 0.0f : ((v > 3.0f) ? 3.0f : v);
+            if (sscanf(arg, "%*f %f", &sw) == 1)
+                g_PcFogWindSnow = (sw < 0.0f) ? 0.0f : ((sw > 1.0f) ? 1.0f : sw);
+        }
+        cprintf("fog drift: %.2f m/s, snow-wind share %.2f (0.45 / 0.25 default)", g_PcFogWind, g_PcFogWindSnow);
+    } else if (strcmp(cmd, "FOGFOLLOW") == 0) {
+        extern float g_PcFogFollow;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogFollow = (v < 0.0f) ? 0.0f : ((v > 1.0f) ? 1.0f : v); }
+        cprintf("fog follows the camera by %.2f of its travel (0.25 default, 0 = fixed in the world)", g_PcFogFollow);
+    } else if (strcmp(cmd, "FOGCLOUDS") == 0) {
+        /* fogclouds 0..1 -- cloud masses in the mist (session only; Fog page saves it). */
+        extern float g_PcFogClouds;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogClouds = (v < 0.0f) ? 0.0f : ((v > 1.0f) ? 1.0f : v); }
+        cprintf("fog clouds: %.2f (0 = off, 0.5 default)", g_PcFogClouds);
+    } else if (strcmp(cmd, "FOGBLUR") == 0) {
+        /* fogblur 0..0.9 -- fog motion blur: share of the previous frame a mist
+         * pixel keeps per 60 Hz frame (session only; Fog page saves it). */
+        extern float g_PcFogMotionBlur;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogMotionBlur = (v < 0.0f) ? 0.0f : ((v > 0.9f) ? 0.9f : v); }
+        cprintf("fog motion blur: %.2f (0 = off, 0.9 default)", g_PcFogMotionBlur);
+    } else if (strcmp(cmd, "FOGFULL") == 0) {
+        extern float g_PcFogFullMul;
+        if (arg[0]) { float v = (float)atof(arg); g_PcFogFullMul = (v < 0.5f) ? 0.5f : ((v > 6.0f) ? 6.0f : v); }
+        cprintf("full fog at %.2f x fog distance / density (capped below the draw edge)", g_PcFogFullMul);
+    } else if (strcmp(cmd, "FOGQUALITY") == 0) {
+        if (arg[0]) {
+            char buf[8];
+            int q = atoi(arg);
+            g_PcConfig.fogQuality = (q < 4) ? 4 : ((q > 8) ? 8 : q);
+            snprintf(buf, sizeof(buf), "%d", g_PcConfig.fogQuality);
+            PcConfig_SaveKeyValue("fog_quality", buf);
+        }
+        cprintf("fog samples per ray: %d (4..8)", g_PcConfig.fogQuality);
+    } else if (strcmp(cmd, "FOGVEIL") == 0) {
+        if (arg[0] == '1') g_PcConfig.fogVeil = 1;
+        else if (arg[0] == '0') g_PcConfig.fogVeil = 0;
+        else g_PcConfig.fogVeil = !g_PcConfig.fogVeil;
+        PcConfig_SaveKeyValue("fog_veil", g_PcConfig.fogVeil ? "1" : "0");
+        cprintf("fog strength < 1: %s", g_PcConfig.fogVeil ? "legacy veil (distant geometry keeps colour)"
+                                                             : "thinner mist, full fog stays full");
     } else if (strcmp(cmd, "WELD") == 0) {
         extern float g_pgxpWeldPx;
         if (arg[0]) g_pgxpWeldPx = (float)atof(arg);
@@ -1741,6 +1922,19 @@ void Pc_ConsoleExec(const char* line)
         extern float g_pgxpWeldWRatio;
         if (arg[0]) g_pgxpWeldWRatio = (float)atof(arg);
         cprintf("PGXP weld depth ratio: %.3f", g_pgxpWeldWRatio);
+    } else if (strcmp(cmd, "WEATHERSTYLE") == 0) {
+        /* weatherstyle 0|1|2 -- snow and rain: 0 = PSX exact, 1 = sub-pixel,
+         * fogged, depth-tested, 2 = that, soft round flakes and thin rain
+         * streaks (pc_weather.c). No argument cycles. Saved. */
+        static const char* const names[3] = { "PSX exact", "sub-pixel, fogged, depth-tested",
+                                              "soft (round flakes, thin streaks), sub-pixel, fogged, depth-tested" };
+        char buf[4];
+        if (arg[0] >= '0' && arg[0] <= '2') g_PcConfig.weatherStyle = arg[0] - '0';
+        else g_PcConfig.weatherStyle = (g_PcConfig.weatherStyle + 1) % 3;
+        buf[0] = (char)('0' + g_PcConfig.weatherStyle);
+        buf[1] = 0;
+        PcConfig_SaveKeyValue("weather_style", buf);
+        cprintf("snow and rain: %s", names[g_PcConfig.weatherStyle]);
     } else if (strcmp(cmd, "WEATHERHZ") == 0) {
         if (arg[0]) g_PcConfig.weatherSimHz = (atoi(arg) == 30) ? 30 : 60;
         cprintf("Weather (rain/snow) simulation: %d Hz%s", g_PcConfig.weatherSimHz,
@@ -1995,6 +2189,35 @@ void Pc_ConsoleExec(const char* line)
         PcConfig_SaveKeyValue("flashlight_replace", g_PcConfig.flashlightReplace ? "1" : "0");
         cprintf("flashlight replace: %s%s", g_PcConfig.flashlightReplace ? "ON" : "OFF",
                 g_PcConfig.perPixelFlashlight ? "" : " (only affects per-pixel modes, see flmode)");
+    } else if (strcmp(cmd, "EXTFULL") == 0) {
+        /* extfull 0|1 -- exteriors: keep every street textured and draw the
+         * whole draw reach (1) or the original texture window (0). Saved. */
+        if (arg[0] == '1') g_PcConfig.exteriorFullDraw = 1;
+        else if (arg[0] == '0') g_PcConfig.exteriorFullDraw = 0;
+        else g_PcConfig.exteriorFullDraw = !g_PcConfig.exteriorFullDraw;
+        PcConfig_SaveKeyValue("exterior_full_draw", g_PcConfig.exteriorFullDraw ? "1" : "0");
+        cprintf("exterior full draw: %s%s", g_PcConfig.exteriorFullDraw ? "ON" : "OFF (original texture window)",
+                Pc_ExteriorFullDrawActive() ? " - active here" : "");
+    } else if (strcmp(cmd, "HOLDERLIGHT") == 0) {
+        /* holderlight <fill> [bounce] -- flashlight replace: light on Harry
+         * himself, as factors of the beam strength. Saved. */
+        extern float g_PcHolderFill, g_PcHolderBounce;
+        if (arg[0] != '\0') {
+            char  buf[16];
+            float f = g_PcHolderFill;
+            float b = g_PcHolderBounce;
+            sscanf(arg, "%f %f", &f, &b);
+            g_PcHolderFill   = (f < 0.0f) ? 0.0f : ((f > 1.0f) ? 1.0f : f);
+            g_PcHolderBounce = (b < 0.0f) ? 0.0f : ((b > 1.0f) ? 1.0f : b);
+            g_PcConfig.flashlightHolderFill   = g_PcHolderFill;
+            g_PcConfig.flashlightHolderBounce = g_PcHolderBounce;
+            snprintf(buf, sizeof(buf), "%.3f", g_PcHolderFill);
+            PcConfig_SaveKeyValue("flashlight_holder_fill", buf);
+            snprintf(buf, sizeof(buf), "%.3f", g_PcHolderBounce);
+            PcConfig_SaveKeyValue("flashlight_holder_bounce", buf);
+        }
+        cprintf("holder light: fill %.3f, bounce %.3f (x beam strength; 0.10 / 0.15 default)", g_PcHolderFill,
+                g_PcHolderBounce);
     } else if (strcmp(cmd, "SHADOWS") == 0) {
         /* Toggles shadows WITHIN the current flashlight mode. Classic + Shadows
          * without shadows is just Classic, so 1<->0 and 3<->2. */
@@ -2010,15 +2233,23 @@ void Pc_ConsoleExec(const char* line)
     } else if (strcmp(cmd, "SHADOWBIAS") == 0) {
         extern float g_PsyX_FlashlightShadowBias;
         if (arg[0] != '\0') g_PsyX_FlashlightShadowBias = (float)atof(arg);
-        cprintf("shadow bias = %.5f", g_PsyX_FlashlightShadowBias);
+        cprintf("shadow bias = %.2f texels (+2 units, linear depth; 1.0 default)", g_PsyX_FlashlightShadowBias);
+    } else if (strcmp(cmd, "SHADOWSOFT") == 0) {
+        /* shadowsoft <cm> -- flashlight light size for the contact-hardening
+         * filter (3 default); 0 = fixed 5x5 PCF. Session only; the quick
+         * options "Light Shadows" page saves it. */
+        extern float g_PcFlShadowSoft;
+        if (arg[0] != '\0') g_PcFlShadowSoft = (float)atof(arg);
+        if (g_PcFlShadowSoft < 0.0f) g_PcFlShadowSoft = 0.0f;
+        cprintf("flashlight shadow softness = %.1f cm (0 = 5x5 PCF)", g_PcFlShadowSoft);
     } else if (strcmp(cmd, "SHADOWSTRENGTH") == 0) {
-        extern float g_PsyX_FlashlightShadowStrength;
-        if (arg[0] != '\0') g_PsyX_FlashlightShadowStrength = (float)atof(arg);
-        cprintf("shadow strength = %.3f (1=full/default, lower=softer)", g_PsyX_FlashlightShadowStrength);
+        extern float g_PcFlShadowStrength;
+        if (arg[0] != '\0') g_PcFlShadowStrength = (float)atof(arg);
+        cprintf("flashlight shadow strength = %.2f (0.5 default, 1 = black)", g_PcFlShadowStrength);
     } else if (strcmp(cmd, "SHADOWFADE") == 0) {
-        extern float g_PsyX_FlashlightShadowFadeDist;
-        if (arg[0] != '\0') g_PsyX_FlashlightShadowFadeDist = (float)atof(arg);
-        cprintf("shadow contact-fade = %.1f (0=off; >0 = view units behind occluder)", g_PsyX_FlashlightShadowFadeDist);
+        extern float g_PcFlShadowFade;
+        if (arg[0] != '\0') g_PcFlShadowFade = (float)atof(arg);
+        cprintf("flashlight shadow length = %.1f m behind the caster (2.5 default, 0 = no fade)", g_PcFlShadowFade);
     } else if (strcmp(cmd, "SHADOWNORMAL") == 0) {
         extern float g_PsyX_FlashlightShadowNormalOffset;
         if (arg[0] != '\0') g_PsyX_FlashlightShadowNormalOffset = (float)atof(arg);

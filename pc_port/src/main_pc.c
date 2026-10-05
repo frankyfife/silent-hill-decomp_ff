@@ -680,9 +680,23 @@ static int s_SkipToGameArg = 0;
 
 static void ParseArgs(int argc, char* argv[])
 {
+    extern int Pc_LevelSelect_ParseArg(int argc, char* argv[], int i);
+    extern int Pc_AutoShot_ParseArg(int argc, char* argv[], int i);
+
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "-data") == 0 && i + 1 < argc)
+        int used = Pc_LevelSelect_ParseArg(argc, argv, i);
+
+        if (used == 0)
+        {
+            used = Pc_AutoShot_ParseArg(argc, argv, i);
+        }
+
+        if (used > 0)
+        {
+            i += used - 1;
+        }
+        else if (strcmp(argv[i], "-data") == 0 && i + 1 < argc)
         {
             strncpy(g_GameDataPath, argv[i + 1], sizeof(g_GameDataPath) - 1);
             g_GameDataPath[sizeof(g_GameDataPath) - 1] = '\0';
@@ -699,6 +713,10 @@ static void ParseArgs(int argc, char* argv[])
             printf("Usage: SilentHillPC [options]\n");
             printf("Options:\n");
             printf("  -data <path>    Path to game data directory or CD image\n");
+            printf("  -skiptogame     Start a New Game in the configured map\n");
+            printf("  -map <id>       Start a New Game in map <id> (e.g. map2_s00); not saved\n");
+            printf("  -spawn <s>      With -map: default, door:<n> or room:<n>\n");
+            printf("  -difficulty <d> With -map: easy, normal or hard\n");
             printf("  -h, --help      Show this help\n");
             exit(0);
         }
@@ -753,6 +771,13 @@ int main(int argc, char* argv[])
         SH_DBG("[CONFIG] flashlight_mode=%d use_pgxp=%d resident_textures=%d global_chara_pool=%d",
                g_PcConfig.flashlightMode, g_PcConfig.usePgxp,
                g_PcConfig.residentTextures, g_PcConfig.globalCharaPool);
+    }
+
+    /* After -skiptogame (an explicit -map names map0_s00 on purpose), with the
+     * log open, and before Pc_Rando_Init / MapRegistry_Init read the map. */
+    {
+        extern void Pc_LevelSelect_Apply(void);
+        Pc_LevelSelect_Apply();
     }
 
     /* Scale the texture-pack memory budgets to the machine's RAM. The defaults
@@ -1321,6 +1346,11 @@ int main(int argc, char* argv[])
         }
         g_PsyX_FlashlightIntensityFps = g_PcConfig.flashlightIntensityFps;
         g_PsyX_FlashlightSizeFps      = g_PcConfig.flashlightSizeFps;
+        {
+            extern float g_PcHolderFill, g_PcHolderBounce;
+            g_PcHolderFill   = g_PcConfig.flashlightHolderFill;
+            g_PcHolderBounce = g_PcConfig.flashlightHolderBounce;
+        }
         SH_LOG("Effect intensity: flashlight %.2f, post %.2f, tonemap %.2f; flashlight size %.2f",
                g_PsyX_FlashlightIntensity, g_cfg_postProcessIntensity, g_cfg_tonemapIntensity, g_PsyX_FlashlightSize);
     }

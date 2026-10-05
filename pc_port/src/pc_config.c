@@ -23,10 +23,12 @@ s_PcConfig g_PcConfig = {
     .disableCulling = 1,
     .drawDistancePct = 100, /* 100 = vanilla ~61u; 200 doubles it (worth it with fog turned down) */
     .preloadChunks  = 1,
+    .exteriorFullDraw = 1,
     .vsync          = 0,
     .refreshRate    = 0,
     .fpsCap         = 30,
     .weatherSimHz      = 60,   /* per-frame weather sim; 30 = the console's cadence */
+    .weatherStyle      = 2,    /* weather sprites soft (round flakes, thin streaks), sub-pixel, fogged, depth-tested */
     .cutsceneLineGapMs = 300,
     .skipIntros     = 0,
     .showConsole    = 0,
@@ -64,11 +66,17 @@ s_PcConfig g_PcConfig = {
     .perPixelFlashlight = 0, /* DERIVED from flashlightMode */
     .flashlightShadows  = 1, /* per-pixel flashlight casts real-time shadows (on by default; only visible when perPixelFlashlight is on) */
     .flashlightReplace  = 1, /* per-pixel beam replaces the PSX per-vertex flashlight instead of dimming over it */
-    .fogStrength          = 1.10f, /* PSX-matched density; lower reveals more of the widened draw distance */
+    .fogStrength          = 1.0f,  /* density; the distance stages (pc_fog_shape.c) shape it further */
+    .fogMode              = 1, /* volumetric per-pixel fog; 0 = PSX per-vertex */
+    .fogWisps             = 1.0f,
+    .fogVeil              = 0,
+    .fogQuality           = 6,
     .flashlightIntensity  = 1.20f, /* per-pixel flashlight cone brightness scale, 0..3 */
     .flashlightSize       = 3.00f, /* per-pixel flashlight cone coverage multiplier */
     .flashlightIntensityFps = 2.10f, /* FPS-mode brightness (head-mounted) */
     .flashlightSizeFps      = 1.30f, /* FPS-mode coverage (tighter than third-person) */
+    .flashlightHolderFill   = 0.10f,
+    .flashlightHolderBounce = 0.15f,
     .postProcessIntensity = 1.0f, /* post-process effect mix, 0..1 */
     .tonemapIntensity     = 1.0f, /* tone-map mix, 0..1 */
     .brightness           = 1.0f, /* output image brightness; 1.0 = neutral */
@@ -101,7 +109,7 @@ s_PcConfig g_PcConfig = {
     .control2dSnap           = 0, /* 2D control turns into the direction (0), doesn't snap */
     .minimap                 = 0, /* minimap overlay off by default */
     .anisoLevel              = 8,
-    .shadowMapSize           = 1024,
+    .shadowMapSize           = 2048,
     .minimapCorner           = 0, /* top-left */
     .minimapShape            = 1, /* deprecated; only feeds the old-config migration */
     .configVersion           = 0, /* absent key = pre-versioning; migration runs, then it is stamped */
@@ -549,6 +557,43 @@ void PcConfig_Load(const char* path)
             if (f > 2.0f) f = 2.0f;
             g_PcConfig.fogStrength = f;
         }
+        else if (strcmp(key, "fog_mode") == 0)
+        {
+            g_PcConfig.fogMode = (atoi(value) != 0);
+        }
+        else if (strcmp(key, "fog_wisps") == 0)
+        {
+            float f = (float)atof(value);
+            g_PcConfig.fogWisps = (f < 0.0f) ? 0.0f : ((f > 2.0f) ? 2.0f : f);
+        }
+        else if (strcmp(key, "fog_veil") == 0)
+        {
+            g_PcConfig.fogVeil = (atoi(value) != 0);
+        }
+        else if (strcmp(key, "fog_quality") == 0)
+        {
+            int q = atoi(value);
+            g_PcConfig.fogQuality = (q < 4) ? 4 : ((q > 8) ? 8 : q);
+        }
+        else if (strncmp(key, "fog_", 4) == 0 && Pc_FogShape_ParseKey(key, value))
+        {
+            /* The volumetric fog's shaping keys (pc_fog_shape.c; the Fog pages
+             * of the quick options save them). */
+        }
+        else if ((strncmp(key, "sky_light", 9) == 0 || strncmp(key, "flashlight_shadow_", 18) == 0 ||
+                  strcmp(key, "flashlight_shadow") == 0 || strncmp(key, "lighter_shadow", 14) == 0 ||
+                  strcmp(key, "harry_shadow") == 0 || strcmp(key, "shadow_gap_fill") == 0) &&
+                 Pc_SkyLight_ParseKey(key, value))
+        {
+            /* Sky light and hand-light shadow keys (pc_sky_light.c; quick
+             * options "Sky Light" and "Light Shadows"). */
+        }
+        else if (strncmp(key, "quick_menu_", 11) == 0)
+        {
+            /* Where the quick options overlay was left (pc_quick_options.c). */
+            extern void Pc_QuickOptions_ParseKey(const char* key, const char* value);
+            Pc_QuickOptions_ParseKey(key, value);
+        }
         else if (strcmp(key, "draw_distance_pct") == 0)
         {
             /* Above ~210 the view-space Z (Q8 in an s16 scratch) wraps past 128u. */
@@ -556,6 +601,10 @@ void PcConfig_Load(const char* path)
             if (pct < 100) pct = 100;
             if (pct > 200) pct = 200;
             g_PcConfig.drawDistancePct = pct;
+        }
+        else if (strcmp(key, "exterior_full_draw") == 0)
+        {
+            g_PcConfig.exteriorFullDraw = (atoi(value) != 0);
         }
         else if (strcmp(key, "preload_chunks") == 0)
         {
@@ -577,6 +626,11 @@ void PcConfig_Load(const char* path)
         else if (strcmp(key, "cutscene_line_gap_ms") == 0)
         {
             g_PcConfig.cutsceneLineGapMs = atoi(value);
+        }
+        else if (strcmp(key, "weather_style") == 0)
+        {
+            int w = atoi(value);
+            g_PcConfig.weatherStyle = (w < 0) ? 0 : ((w > 2) ? 2 : w);
         }
         else if (strcmp(key, "weather_sim_hz") == 0)
         {
@@ -801,6 +855,16 @@ void PcConfig_Load(const char* path)
             if (v < 0.0f) v = 0.0f;
             if (v > 3.0f) v = 3.0f;
             g_PcConfig.flashlightSizeFps = v;
+        }
+        else if (strcmp(key, "flashlight_holder_fill") == 0)
+        {
+            float v = (float)atof(value);
+            g_PcConfig.flashlightHolderFill = (v < 0.0f) ? 0.0f : ((v > 1.0f) ? 1.0f : v);
+        }
+        else if (strcmp(key, "flashlight_holder_bounce") == 0)
+        {
+            float v = (float)atof(value);
+            g_PcConfig.flashlightHolderBounce = (v < 0.0f) ? 0.0f : ((v > 1.0f) ? 1.0f : v);
         }
         else if (strcmp(key, "xa_volume") == 0)
         {

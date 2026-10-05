@@ -171,6 +171,10 @@ static void (*g_GameStateUpdateFuncs[])(void) = {
 #ifdef SH_PC_PORT
 int g_DebugCamEnabled = 0;  /* 0 = normal camera, 1 = debug camera */
 int g_DebugFogDisabled = 0; /* 0 = fog normal, 1 = fog forced off (debug cam only) */
+/* The free camera freezes the game (enemies, Harry, weather) like the console
+ * does; it flies on the real frame time kept here. Console: freecampause. */
+int    g_PcFreeCamPause = 1;
+static q19_12 s_pcFreeCamDt = 0;
 int g_DebugNoWallCollision = 0;  /* 0 = wall collision on, 1 = walk through walls */
 int g_PcGodMode = 0;             /* 1 = god mode: no combat damage + health held full. ONE shared flag toggled by the `god` console cmd AND debug key 7, so turning it off either way fully disables it. */
 int g_PcInfiniteAmmo = 0;        /* 1 = firing does not spend ammo. Suppresses the two decrements and lets an empty clip fire; never writes to the inventory, so no round is ever added or removed. */
@@ -1285,7 +1289,7 @@ void Pc_FreeCam_Set(int on)
          * Numpad . turns it back on when the fog itself is what you want to
          * look at. */
         g_DebugFogDisabled = 1;
-        SH_DBG_ECHO("[FREECAM] on -- mouse look, W/A/S/D move, Space/C up/down, Shift fast, Ctrl slow");
+        SH_DBG_ECHO("[FREECAM] on -- mouse look, W/A/S/D move, Space/C up/down, Shift fast, Ctrl slow, G fog");
     } else {
         /* Only hand back a snapshot that still belongs to the room Harry is in
          * (same test as Pc_FreeCam_Apply). Restoring another room's coordinates
@@ -1334,8 +1338,8 @@ static void Pc_FreeCam_Input(void)
         if (rx != 0 || ry != 0)
         {
             float cs = g_PcConfig.controllerSensitivity;
-            s32 dYaw   = TIMESTEP_SCALE_30_FPS(g_DeltaTime, (s32)(((rx * FC_STICK_YAW)   >> 7) * cs));
-            s32 dPitch = TIMESTEP_SCALE_30_FPS(g_DeltaTime, (s32)(((ry * FC_STICK_PITCH) >> 7) * cs));
+            s32 dYaw   = TIMESTEP_SCALE_30_FPS(s_pcFreeCamDt, (s32)(((rx * FC_STICK_YAW)   >> 7) * cs));
+            s32 dPitch = TIMESTEP_SCALE_30_FPS(s_pcFreeCamDt, (s32)(((ry * FC_STICK_PITCH) >> 7) * cs));
             g_DebugCamAngleY = (g_DebugCamAngleY + dYaw) & 0xFFF;
             /* ry>0 = stick down = look down (AngleX positive), matching the
              * mouse convention above; invert flag flips it. */
@@ -1345,8 +1349,22 @@ static void Pc_FreeCam_Input(void)
         }
     }
 
-    spd  = TIMESTEP_SCALE_60_FPS(g_DeltaTime, FC_MOVE_SPEED);
-    vspd = TIMESTEP_SCALE_60_FPS(g_DeltaTime, FC_VERT_SPEED);
+    /* G: fog on/off for the free camera, with or without the dev keys (the
+     * Numpad . toggle below needs allow_debug_controls). */
+    {
+        static int s_fogKeyPrev = 0;
+        int        cur          = ks[SDL_SCANCODE_G];
+
+        if (cur && !s_fogKeyPrev)
+        {
+            g_DebugFogDisabled = !g_DebugFogDisabled;
+            SH_DBG_ECHO("[FREECAM] fog %s (G)", g_DebugFogDisabled ? "OFF" : "ON");
+        }
+        s_fogKeyPrev = cur;
+    }
+
+    spd  = TIMESTEP_SCALE_60_FPS(s_pcFreeCamDt, FC_MOVE_SPEED);
+    vspd = TIMESTEP_SCALE_60_FPS(s_pcFreeCamDt, FC_VERT_SPEED);
     if (ks[SDL_SCANCODE_LSHIFT] || ks[SDL_SCANCODE_RSHIFT]) { spd *= 3; vspd *= 3; }
     if (ks[SDL_SCANCODE_LCTRL]) { spd >>= 2; vspd >>= 2; }
     /* R1 = fast (Shift), L1 = slow (Ctrl). */
@@ -2416,6 +2434,9 @@ void MainLoop(void) // 0x80032EE0
         /* Re-armed by the single Gfx_InGameDraw call site during this frame's
          * state update, and read by the clear-color choice further down. */
         g_PcWorldDrawnThisFrame = 0;
+        /* Before the update: the volumetric fog reads positions the GTE capture
+         * records while this frame's geometry is built. */
+        { extern void Pc_VolumetricFogFrameBegin(void); Pc_VolumetricFogFrameBegin(); }
 #endif
 
         // Call update function for current GameState.
@@ -2425,6 +2446,10 @@ void MainLoop(void) // 0x80032EE0
         g_GameStateUpdateFuncs[g_GameWork.gameState]();
 #ifdef SH_PC_PORT
         s_sfUpdEnd = (unsigned int)SDL_GetTicks();
+        { extern void Pc_AutoShot_Frame(void); Pc_AutoShot_Frame(); }
+        /* No world draw this frame means no camera/fog push: never shade with
+         * last frame's uniforms. */
+        { extern int g_PsyX_FogMode; if (!g_PcWorldDrawnThisFrame) g_PsyX_FogMode = 0; }
 #endif
 #ifdef SH_PC_PORT
         if (g_GameWork.gameState == GameState_InGame) {
@@ -2509,9 +2534,17 @@ void MainLoop(void) // 0x80032EE0
              * scene the moment the player paused. It is a stable state with no
              * fade -- none of the transition/menu hazards this gate exists for
              * (room loads, map/inventory opens, the options screen) apply. */
+            /* Cutscenes and dialogue render the live world too: their event
+             * states (and a text box over the world) are as settled as
+             * gameplay, so the beam, the lighter and the sky light keep their
+             * shadows there. Room loads, menus, the map and every fade stay out. */
             g_PsyX_ShadowsAllowed = (g_GameWork.gameState == GameState_InGame &&
                                      (g_SysWork.sysState == SysState_Gameplay ||
-                                      g_SysWork.sysState == SysState_GamePaused) &&
+                                      g_SysWork.sysState == SysState_GamePaused ||
+                                      g_SysWork.sysState == SysState_EventCallback ||
+                                      g_SysWork.sysState == SysState_EventSetFlag ||
+                                      g_SysWork.sysState == SysState_EventPlaySound ||
+                                      g_SysWork.sysState == SysState_ReadMessage) &&
                                      ScreenFade_IsNone()) ? 1 : 0;
         }
 
@@ -3120,7 +3153,11 @@ void MainLoop(void) // 0x80032EE0
         {
             extern int g_PcConsoleInputActive;
             extern int g_PcQuickOptionsActive;
-            if ((g_PcConsoleInputActive || g_PcQuickOptionsActive) &&
+            /* The free camera flies on this frame's real time even when the
+             * game is frozen under it. */
+            s_pcFreeCamDt = g_DeltaTime;
+            if ((g_PcConsoleInputActive || g_PcQuickOptionsActive ||
+                 (g_DebugCamEnabled && g_PcFreeCamPause && g_GameWork.gameState == GameState_InGame)) &&
                 !(g_SysWork.bgmStatusFlags & BgmStatusFlag_Pause) &&
                 !g_SysWork.isMgsStringSet) {
                 g_DeltaTime    = 0;
@@ -3176,7 +3213,11 @@ void MainLoop(void) // 0x80032EE0
                 }
             }
             g_DebugFogTogglePrev = cur;
-
+        }
+        /* Applied with or without the dev keys: the free camera is a user
+         * feature and starts with its fog off, which used to take effect only
+         * when allow_debug_controls was set. */
+        if (g_GameWork.gameState == 11) {
             /* When debug camera is off, fog is always normal */
             if (!g_DebugCamEnabled) {
                 g_DebugFogDisabled = 0;

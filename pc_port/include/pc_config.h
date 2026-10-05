@@ -61,6 +61,10 @@ typedef struct {
                             * parts differ (snow's random walk, spawn/rest counters, the wind
                             * ramp); fall speed and wind are delta-scaled either way.
                             * (config key: weather_sim_hz, console: WEATHERHZ) */
+    int weatherStyle;      /* 0 = PSX exact snow/rain sprites; 1 = same sprites placed sub-pixel, in the per-pixel
+                            * fog and depth-tested against the world (no flakes through ceilings); 2 = that,
+                            * drawn soft: round flakes of a real size, thin rain streaks. Default 2
+                            * (config key: weather_style, console: WEATHERSTYLE) */
     int cutsceneLineGapMs; /* min silence (ms) between cutscene voice lines — simulates PSX CD
                             * seek latency so tightly-timed lines don't run together. Applied as a
                             * MINIMUM (never shortens an authored gap). 0 = off. Default 300. */
@@ -161,6 +165,10 @@ typedef struct {
                            * AI update funcs, so console SPAWN works for every type in any map. Native
                            * maps keep their native slots/variants; 0 = vanilla 3-types-per-map.
                            * (config key: global_chara_pool; docs/Global_Chara_Pool.md) */
+    int exteriorFullDraw;  /* exteriors keep every street textured and draw everything within the draw
+                            * reach of the camera, instead of the vanilla texture window that made 40 m
+                            * blocks pop in and out. Needs preload_chunks + resident_textures; default 1
+                            * (config key: exterior_full_draw) */
     int wholeMapExteriors; /* EXPERIMENTAL, default 0: texture + draw every loaded exterior chunk (whole
                             * town resident — combine with fogstr to see it). Costs draw time and shows
                             * geometry vanilla never rendered at once. Requires preload_chunks and
@@ -207,10 +215,21 @@ typedef struct {
                              * (vertices get ambient only, no whole-scene dim) instead of being
                              * laid over a dimmed copy of it. 1 = on (config key: flashlight_replace) */
     float fogStrength;          /* distance-fog density scale, 0..2; 1.1 = PSX-matched. Lower to see further (config key: fog_strength) */
+    int fogMode;                /* 0 = PSX fog (per-vertex ramp of screen depth), 1 = volumetric: per pixel by
+                                 * true distance, PSX curve and visibility, plus height layer, drifting banks
+                                 * and a fogged backdrop (config key: fog_mode) */
+    float fogWisps;             /* volumetric fog: drifting-mist strength 0..2, 1 = default, 0 = smooth (config key: fog_wisps) */
+    int fogVeil;                /* 0 = fog_strength < 1 thins the light mist (full fog later, nothing shows through it);
+                                 * 1 = legacy: it scales the fog amount, distant geometry keeps (1 - strength)
+                                 * of its colour (config key: fog_veil) */
+    int fogQuality;             /* volumetric fog samples per ray 4..8 (config key: fog_quality) */
     float flashlightIntensity;  /* per-pixel flashlight cone brightness scale, 0..3 (config key: flashlight_intensity) */
     float flashlightSize;       /* per-pixel flashlight cone coverage multiplier, 0..3 (config key: flashlight_size) */
     float flashlightIntensityFps; /* per-pixel flashlight brightness in FPS mode, 0..3 (config key: flashlight_intensity_fps) */
     float flashlightSizeFps;      /* per-pixel flashlight coverage in FPS mode, 0..3 (config key: flashlight_size_fps) */
+    float flashlightHolderFill;   /* flashlight replace: Harry's all-round fill x beam strength, 0..1 (config key: flashlight_holder_fill) */
+    float flashlightHolderBounce; /* flashlight replace: light thrown back onto Harry from the beam's target x beam
+                                   * strength, 0..1 (config key: flashlight_holder_bounce) */
     float postProcessIntensity; /* post-process effect mix, 0..1 (config key: post_process_intensity) */
     float tonemapIntensity;     /* tone-map mix, 0..1 (config key: tonemap_intensity) */
     /* Image adjustments applied to the final frame every time (independent of the
@@ -259,7 +278,7 @@ typedef struct {
     int menuFilter;          /* 1 = bilinear-filter menus / 2D screens, independent of the in-game texture Filtering mode; default 0 (config key: menu_filter) */
     int minimap;             /* minimap overlay: 0 = off, 1 = square, 2 = circle (config key: minimap); default 0 */
     int anisoLevel;          /* max anisotropic taps, 1..16 (config key: aniso_level); default 8 */
-    int shadowMapSize;       /* flashlight shadow-map resolution, 256..8192 (config key: shadow_resolution); default 1024 */
+    int shadowMapSize;       /* flashlight shadow-map resolution, 256..8192 (config key: shadow_resolution); default 2048 */
     int minimapCorner;       /* minimap screen corner: 0 = top-left, 1 = top-right, 2 = bottom-left, 3 = bottom-right (config key: minimap_corner); default 0 */
     int minimapShape;        /* DEPRECATED, folded into `minimap`; still read to migrate old configs (config key: minimap_shape) */
     int configVersion;       /* PC_CONFIG_VERSION the file was last written at; 0 = pre-versioning. Drives the default-migration in PcConfig_Load (config key: config_version) */
@@ -483,6 +502,18 @@ extern s_PcConfig g_PcConfig;
  * street room, whole_map_exteriors + preload_chunks + resident_textures all
  * on. Implemented in bodyprog_80040B74.c (needs g_Map/g_SavegamePtr). */
 int Pc_WholeMapDrawActive(void);
+
+/* True while exterior_full_draw applies (exterior map, outdoor cell, preload +
+ * resident textures on, whole-map mode off). bodyprog_80040B74.c. */
+int Pc_ExteriorFullDrawActive(void);
+
+/* pc_fog_shape.c: config keys of the volumetric fog shaping (fog_size,
+ * fog_ground, fog_stage1, ...). Returns 1 when the key was one of them. */
+int Pc_FogShape_ParseKey(const char* key, const char* value);
+
+/* pc_sky_light.c: config keys of the sky light (sky_light, sky_light_strength,
+ * ...). Returns 1 when the key was one of them. */
+int Pc_SkyLight_ParseKey(const char* key, const char* value);
 
 /* Apply a flashlight mode (0..3, see flashlightMode) to the config + all PsyX
  * globals. Swaps flashlight_intensity/size between the two per-pixel styles'

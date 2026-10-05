@@ -1221,8 +1221,8 @@ public partial class Form1 : Form
             comboRender.SelectedIndex = comboRender.Items.Count > 0 ? ri : -1;
         }
         {
-            int si = Array.IndexOf(ShadowResValues, config.Get("shadow_resolution", "1024").Trim());
-            if (si < 0 || si >= comboShadow.Items.Count) si = 2; /* 1024 */
+            int si = Array.IndexOf(ShadowResValues, config.Get("shadow_resolution", "2048").Trim());
+            if (si < 0 || si >= comboShadow.Items.Count) si = 3; /* 2048 */
             comboShadow.SelectedIndex = comboShadow.Items.Count > 0 ? si : -1;
         }
         {
@@ -1279,7 +1279,7 @@ public partial class Form1 : Form
         // preload_chunks
         config.Set("bullet_decals", radioDecalsYes.Checked ? "1" : "0");
         config.Set("renderer", RendererValues[comboRender.SelectedIndex >= 0 ? comboRender.SelectedIndex : 1]);
-        config.Set("shadow_resolution", ShadowResValues[comboShadow.SelectedIndex >= 0 ? comboShadow.SelectedIndex : 2]);
+        config.Set("shadow_resolution", ShadowResValues[comboShadow.SelectedIndex >= 0 ? comboShadow.SelectedIndex : 3]);
         {
             int mi = comboMinimap.SelectedIndex;
             if (mi < 0) mi = 0;

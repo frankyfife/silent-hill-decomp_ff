@@ -1585,11 +1585,11 @@ void func_8003DA9C(e_CharaId charaId, GsCOORDINATE2* boneCoords, s32 arg2, q3_12
          * further below), so it needs its own no-cast flag — otherwise his gun/
          * pipe/flashlight throws a flashlight shadow even though his body doesn't. */
         { extern int g_PsyX_NoShadowCast; g_PsyX_NoShadowCast = 1; }
-        /* Under flashlight replacement the held item keeps the PSX self-light,
-         * so the cone must not add onto it a second time. */
+        /* Under flashlight replacement the held item is the light's holder:
+         * -1 lets the cone reach only what is in front of the lens. */
         { extern int g_PcFlashlightHolderDraw; extern float g_PsyX_CharaFade; extern int Pc_FlashlightReplaceActive(void);
           g_PcFlashlightHolderDraw = 1;
-          g_PsyX_CharaFade = Pc_FlashlightReplaceActive() ? 1.0f : 0.0f; }
+          g_PsyX_CharaFade = Pc_FlashlightReplaceActive() ? -1.0f : 0.0f; }
 #endif
         WorldGfx_HeldItemDraw();
 #ifdef SH_PC_PORT
@@ -1688,8 +1688,9 @@ void func_8003DA9C(e_CharaId charaId, GsCOORDINATE2* boneCoords, s32 arg2, q3_12
     /* Harry doesn't cast a flashlight shadow — his own body between the light and
      * the scene looked odd. Flag his skeleton verts as non-casters for the depth
      * pre-pass (monsters still cast). Set here (build time) so the GTE captures it
-     * per-vertex; cleared right after. */
-    { extern int g_PsyX_NoShadowCast; g_PsyX_NoShadowCast = (charaId == Chara_Harry) ? 1 : 0; }
+     * per-vertex; cleared right after. 2 = for the hand lights only (flashlight,
+     * lighter): under the sky light he casts like everyone else. */
+    { extern int g_PsyX_NoShadowCast; g_PsyX_NoShadowCast = (charaId == Chara_Harry) ? 2 : 0; }
     /* Hand the same fade the block above applied to this character's LIGHTING to
      * the per-pixel flashlight, which adds its light on top of the TEXTURE and so
      * would otherwise relight a character the game has already faded to nothing.
@@ -1697,12 +1698,13 @@ void func_8003DA9C(e_CharaId charaId, GsCOORDINATE2* boneCoords, s32 arg2, q3_12
      * per-pixel light) it duly disappears, while every Modern/shadow mode kept it
      * lit and standing there forever. Rides the view-space FIFO per vertex. */
     { extern float g_PsyX_CharaFade; g_PsyX_CharaFade = (float)timer / 4096.0f; }
-    /* Harry carries the light: under replacement he keeps its PSX self-light
-     * (the beam points away from him) and stays out of the cone. */
+    /* Harry carries the light: under replacement he gets the holder light
+     * (bodyprog_80055028.c) and the cone reaches only the parts of him in
+     * front of the lens (-1). A running fade keeps its own meaning. */
     { extern int g_PcFlashlightHolderDraw; extern float g_PsyX_CharaFade; extern int Pc_FlashlightReplaceActive(void);
       g_PcFlashlightHolderDraw = (charaId == Chara_Harry);
-      if (g_PcFlashlightHolderDraw && Pc_FlashlightReplaceActive())
-          g_PsyX_CharaFade = 1.0f; }
+      if (g_PcFlashlightHolderDraw && Pc_FlashlightReplaceActive() && timer == Q12(0.0f))
+          g_PsyX_CharaFade = -1.0f; }
     /* [CHARAPRIM]: the draw chain below (func_80057090 -> func_8005AC50) only ever
      * sees a model header, never a chara, so the probe's subject is stamped here —
      * the one place both are in scope. */
