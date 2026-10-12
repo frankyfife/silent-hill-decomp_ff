@@ -23,6 +23,11 @@ per-row override "<NAME>.TIM.pNN.png" (outside its texels it is transparent,
 which no prim of that row samples). Sheets with one palette - and sheets no
 model references (2D art, drawn by code) - are treated whole.
 
+Repeating tiles (streets, floors, walls: one rectangle of the sheet mapped
+whole by many quads) are processed on their own and padded with their own
+opposite edge where the retail art tiles seamlessly, so they repeat without
+seams; their neighbours in the sheet never bleed in.
+
 Transparency (colour 0x0000) stays exactly where it was; its edge is traced on
 the enlarged grid so cut-outs get smooth instead of stair-stepped borders, and
 the colour under transparent texels is bled from the neighbours so filtering
@@ -96,32 +101,103 @@ def bleed(img, valid, n):
     return img, valid
 
 
-def enhance(rgb, opaque, region, S, seed):
+def upscale(sm, S):
+    up = np.stack([ndimage.zoom(sm[..., c], S, order=3, mode='nearest', grid_mode=True)
+                   for c in range(3)], -1)
+    blur = np.stack([ndimage.gaussian_filter(up[..., c], S * 0.6) for c in range(3)], -1)
+    return up + SHARPEN * (up - blur)
+
+
+def grain(shape, seed, wrap=False):
+    rng = np.random.default_rng(seed)
+    return ndimage.gaussian_filter(rng.normal(0, GRAIN, shape), 0.6,
+                                   mode='wrap' if wrap else 'reflect') * 1.6
+
+
+def enhance(rgb, opaque, solid_region, out_region, S, seed):
     """rgb: HxWx3 (0..255) native decode; opaque: texel not transparent;
-    region: texels this image may use. Returns (hi rgb, hi alpha 0/255, hi region)."""
-    H, W = region.shape
-    ys, xs = np.nonzero(region)
+    solid_region: texels drawn through this palette (their colours feed the
+    filter); out_region: texels written (solid_region plus a crack margin).
+    Returns (origin, hi rgb, hi alpha, hi region)."""
+    H, W = out_region.shape
+    ys, xs = np.nonzero(out_region)
     if len(ys) == 0:
         return None
     m = 4  # context margin (native texels)
     y0, y1 = max(ys.min() - m, 0), min(ys.max() + m + 1, H)
     x0, x1 = max(xs.min() - m, 0), min(xs.max() + m + 1, W)
-    rgb, opaque, region = rgb[y0:y1, x0:x1], opaque[y0:y1, x0:x1], region[y0:y1, x0:x1]
-    solid = region & opaque
+    rgb, opaque = rgb[y0:y1, x0:x1], opaque[y0:y1, x0:x1]
+    solid = solid_region[y0:y1, x0:x1] & opaque
     src, _ = bleed(rgb, solid, m)
     sm = bilateral(src, solid)
     sm, _ = bleed(sm, solid, m)
-    up = np.stack([ndimage.zoom(sm[..., c], S, order=3, mode='nearest', grid_mode=True)
-                   for c in range(3)], -1)
-    blur = np.stack([ndimage.gaussian_filter(up[..., c], S * 0.6) for c in range(3)], -1)
-    up = up + SHARPEN * (up - blur)
-    rng = np.random.default_rng(seed)
-    g = ndimage.gaussian_filter(rng.normal(0, GRAIN, up.shape[:2]), 0.6) * 1.6
-    up = np.clip(up + g[..., None], 0, 255)
+    up = np.clip(upscale(sm, S) + grain(((y1 - y0) * S, (x1 - x0) * S), seed)[..., None], 0, 255)
     # alpha: binary as on the PSX, traced on the fine grid (smooth cut-out edges)
     a = ndimage.zoom(opaque.astype(float), S, order=1, mode='nearest', grid_mode=True) > 0.5
-    reg = np.kron(ndimage.binary_dilation(region, iterations=1), np.ones((S, S), bool))
+    reg = np.kron(out_region[y0:y1, x0:x1], np.ones((S, S), bool))
     return (y0, x0), up, a & reg, reg
+
+
+# ----------------------------------------------------------------- repeating tiles
+#
+# Streets, pavements, walls and floors are one small rectangle of the sheet
+# repeated over thousands of quads. Filtered like the rest, each tile's border
+# took colour from whatever lies next to it in the sheet and was then clamped,
+# so every repeat showed a seam: a grid of lines across the street. A rectangle
+# that some quad maps whole is cut out and processed on its own, padded with
+# its own opposite edge (wrap) on every axis where it tiles seamlessly in the
+# retail art, so the remaster repeats as seamlessly as the original.
+
+def tile_rects(prims, row, W, H):
+    rects = {}
+    for p in prims:
+        if p['row'] != row or p['tri']:
+            continue
+        uv = p['uvs']
+        us = sorted({u for u, _v in uv})
+        vs = sorted({v for _u, v in uv})
+        if len(us) != 2 or len(vs) != 2:
+            continue
+        if set(uv) != {(us[0], vs[0]), (us[1], vs[0]), (us[0], vs[1]), (us[1], vs[1])}:
+            continue
+
+        def span(a, b, lim):
+            n = b - a
+            if (n + 1) % 8 == 0:  # inclusive form: 0..31 is a 32-texel tile
+                n += 1
+            return a, min(a + n, lim)
+
+        x0, x1 = span(us[0], us[1], W)
+        y0, y1 = span(vs[0], vs[1], H)
+        if x1 - x0 >= 8 and y1 - y0 >= 8:
+            rects[(x0, y0, x1, y1)] = rects.get((x0, y0, x1, y1), 0) + 1
+    return rects
+
+
+def seamless(t):
+    """(wraps vertically, wraps horizontally) in the retail art: the jump across
+    the tile's own edge is no bigger than an ordinary step inside it."""
+    t = t.astype(float)
+    ix = np.abs(np.diff(t, axis=1)).mean()
+    iy = np.abs(np.diff(t, axis=0)).mean()
+    ex = np.abs(t[:, 0] - t[:, -1]).mean()
+    ey = np.abs(t[0] - t[-1]).mean()
+    return ey <= 1.5 * iy + 2.0, ex <= 1.5 * ix + 2.0
+
+
+def pad2(a, m, wy, wx):
+    rest = [(0, 0)] * (a.ndim - 2)
+    a = np.pad(a, [(m, m), (0, 0)] + rest, mode='wrap' if wy else 'edge')
+    return np.pad(a, [(0, 0), (m, m)] + rest, mode='wrap' if wx else 'edge')
+
+
+def enhance_tile(t, S, seed, wy, wx):
+    m = 4
+    h, w = t.shape[:2]
+    tp = pad2(t, m, wy, wx)
+    sm = bilateral(tp, np.ones(tp.shape[:2], bool))
+    up = upscale(sm, S)[m * S:(m + h) * S, m * S:(m + w) * S]
+    return np.clip(up + grain((h * S, w * S), seed, wrap=True)[..., None], 0, 255)
 
 
 # ----------------------------------------------------------------- per sheet
@@ -140,21 +216,43 @@ def row_rgb(idx, pal):
 
 
 def row_masks(prims, W, H, rows):
+    """-> {row: (drawn texels, drawn texels + 1-texel crack margin)}"""
     out = {}
     for r in rows:
         plane = bytearray(W * H)
         clut_tool._rasterise(plane, [p for p in prims if p['row'] == r], W, H, value=1)
         m = np.frombuffer(bytes(plane), np.uint8).reshape(H, W) > 0
-        out[r] = ndimage.binary_dilation(m, iterations=1)  # hairline cracks between prims
+        out[r] = (m, ndimage.binary_dilation(m, iterations=1))
     return out
 
 
-def save(path, hi_rgb, hi_a, origin, S, W, H):
-    canvas = np.zeros((H * S, W * S, 4), np.uint8)
-    oy, ox = origin[0] * S, origin[1] * S
-    h, w = hi_rgb.shape[:2]
-    canvas[oy:oy + h, ox:ox + w, :3] = hi_rgb.astype(np.uint8)
-    canvas[oy:oy + h, ox:ox + w, 3] = np.where(hi_a, 255, 0)
+def render_row(rgb, opq, solid, region, prims, row, S, seed):
+    """Full-sheet hi-res canvas (rgb, alpha) of one palette row."""
+    H, W = region.shape
+    hi = np.zeros((H * S, W * S, 3))
+    a = np.zeros((H * S, W * S), bool)
+    res = enhance(rgb, opq, solid, region, S, seed)
+    if res is not None:
+        (oy, ox), up, al, reg = res
+        h, w = up.shape[:2]
+        hi[oy * S:oy * S + h, ox * S:ox * S + w][reg] = up[reg]
+        a[oy * S:oy * S + h, ox * S:ox * S + w] |= al
+    tiles = 0
+    rects = tile_rects(prims, row, W, H)
+    for (x0, y0, x1, y1), _n in sorted(rects.items(), key=lambda kv: kv[1]):
+        if not opq[y0:y1, x0:x1].all():
+            continue  # cut-outs (fences, foliage) do not repeat edge to edge
+        wy, wx = seamless(rgb[y0:y1, x0:x1])
+        if not (wy or wx):
+            continue
+        hi[y0 * S:y1 * S, x0 * S:x1 * S] = enhance_tile(rgb[y0:y1, x0:x1], S, seed + x0 * 7 + y0 * 131, wy, wx)
+        a[y0 * S:y1 * S, x0 * S:x1 * S] = True
+        tiles += 1
+    return hi, a, tiles
+
+
+def save(path, hi, a):
+    canvas = np.dstack([np.clip(hi, 0, 255), np.where(a, 255, 0)]).astype(np.uint8)
     # colour under alpha 0 stays (bled) so bilinear filtering has no dark fringe
     Image.fromarray(canvas, 'RGBA').save(path, compress_level=6)
 
@@ -175,33 +273,35 @@ def process(job):
     seed = zlib.crc32(rel.encode())
     nrows = len(pals)
     written = 0
+    tiles = 0
     full = np.ones((H, W), bool)
     if nrows == 1:
         rgb, opq = row_rgb(idx, pals[0])
-        res = enhance(rgb, opq, full, S, seed)
-        save(os.path.join(od, name + '.png'), res[1], res[2], res[0], S, W, H)
-        return rel, 'whole', 1, time.time() - t0
+        hi, a, tiles = render_row(rgb, opq, full, full, prims, 0, S, seed)
+        save(os.path.join(od, name + '.png'), hi, a)
+        return rel, 'whole, %d tile(s)' % tiles, 1, time.time() - t0
     rows = sorted({p['row'] for p in prims if 0 <= p['row'] < min(nrows, MAX_ROWS)})
     masks = row_masks(prims, W, H, rows) if rows else {}
     if not rows:
         # drawn by code (2D art, HUD): every palette over the whole sheet
         rows = list(range(min(nrows, MAX_ROWS)))
-        masks = {r: full for r in rows}
+        masks = {r: (full, full) for r in rows}
     if 0 not in rows:
         rows = [0] + rows  # p00 is the runtime's per-row sentinel; keep it native-equivalent
-        masks[0] = np.zeros((H, W), bool)
+        masks[0] = (np.zeros((H, W), bool),) * 2
     for r in rows:
         rgb, opq = row_rgb(idx, pals[r])
         p = os.path.join(od, '%s.p%02d.png' % (name, r))
-        if not masks[r].any():
+        solid, region = masks[r]
+        if not region.any():
             # sentinel row nobody draws: the plain decode, enlarged
-            a = np.kron(opq, np.ones((S, S), bool))
-            save(p, np.kron(rgb, np.ones((S, S, 1))), a, (0, 0), S, W, H)
+            save(p, np.kron(rgb, np.ones((S, S, 1))), np.kron(opq, np.ones((S, S), bool)))
         else:
-            res = enhance(rgb, opq, masks[r], S, seed + r)
-            save(p, res[1], res[2], res[0], S, W, H)
+            hi, a, n = render_row(rgb, opq, solid, region, prims, r, S, seed + r)
+            tiles += n
+            save(p, hi, a)
         written += 1
-    return rel, 'rows %s' % ','.join(map(str, rows)), written, time.time() - t0
+    return rel, 'rows %s, %d tile(s)' % (','.join(map(str, rows)), tiles), written, time.time() - t0
 
 
 def main():

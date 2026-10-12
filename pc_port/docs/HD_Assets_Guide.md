@@ -94,7 +94,7 @@ The round trip goes through `pc_port/tools/ilm_obj.py`. See
 ```bash
 python ilm_obj.py export DISC/CHARA/SIBYL.ILM -o SIBYL.obj
 python smooth_model.py SIBYL.obj SIBYL_s.obj --levels 2 --keep 0.35 \
-       --soft HEAD=1:0,HAIR=1:0 --skip 06LGUN,10RGUN,11HOLDER
+       --skip 06LGUN,10RGUN,11HOLDER
 copy SIBYL.ilmmeta.json SIBYL_s.ilmmeta.json
 python ilm_obj.py import SIBYL_s.obj DISC/CHARA/SIBYL.ILM -o SIBYL.ILM --v7
 ```
@@ -114,9 +114,8 @@ The result goes to `gamedata/load/CHARA/SIBYL.ILM`.
 
 - **`--soft PATTERN=a1:a2`** sets the amount of rounding per subdivision level
   for parts whose name contains `PATTERN`. `HEAD=1:0` rounds the head like a
-  single subdivision and only splits it once more without moving anything.
-  This keeps nose, brow and chin, where a full two-level smooth would melt the
-  face.
+  single subdivision and only splits it once more without moving anything,
+  which keeps more of the head's own geometry.
 - **`--skip`** copies hard-edged parts unchanged. The skip lists used so far:
 
 | Model | `--skip` |
@@ -124,6 +123,12 @@ The result goes to `gamedata/load/CHARA/SIBYL.ILM`.
 | `SIBYL`, `MSB` | `06LGUN,10RGUN,11HOLDER` |
 | `KAU` | `06LBAG,10RGUN` |
 | `DARIA` | `10RKEY,10FLAURO` |
+
+With the texture on, a head smoothed as fully as the body keeps its face:
+the features live mostly in the texture, and the UVs are subdivided with the
+surface, so eyes, nose and mouth stay where they were. A head kept angular
+next to a rounded body looked out of place. `--soft` stays available for a
+model whose head geometry does carry the features.
 
 ### Characters done with these settings
 
