@@ -527,6 +527,7 @@ static void Pc_FlashlightHolderLight(q19_12 alpha)
 float g_PcFogVolumeScale = 1.0f;
 static float s_pcFogTime = 0.0f;
 extern float Pc_FogShapePush(float nearQ8, float lightGate, float playerY);
+extern int   Pc_PlayerCellOutdoor(void);
 
 void Pc_VolumetricFogFrameBegin(void)
 {
@@ -562,6 +563,14 @@ static void Pc_VolumetricFogPush(void)
         return;
     }
     if (!g_WorldEnvWork.isFogEnabled)
+    {
+        g_PsyX_FogMode = 0;
+        return;
+    }
+    /* Indoors (interior maps, and the rooms an exterior map hosts) keep the
+     * game's own fog: the drifting mist, its layers, clouds and distance stages
+     * are street weather and filled the cafe and the hospital with smoke. */
+    if (!Pc_PlayerCellOutdoor())
     {
         g_PsyX_FogMode = 0;
         return;
