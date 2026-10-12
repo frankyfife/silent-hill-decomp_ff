@@ -5,6 +5,12 @@ at half height (interlace), so the override is the map stretched to 1280x1920.
 The watermark at the bottom right (an orange "SH RESORT" logo and a white URL
 under it) is found by colour and replaced by the retail map's pixels at the
 same place, upscaled and matched to the surrounding colour.
+
+    python maps_hd.py OUT_DIR [SRC_DIR] [--clean]
+
+--clean: the source maps are already free of the watermark (hand retouched),
+use them as they are. File names may carry a download prefix ("imgi_1_") and
+the 3rd hospital floor may be called HOSPITAL3F or SHOSPITAL3F.
 """
 import os
 import sys
@@ -14,8 +20,10 @@ from scipy import ndimage
 
 import tim
 
-SRC = r'D:/Downloads/silent hill'
-OUT = sys.argv[1] if len(sys.argv) > 1 else 'maps_out'
+ARGS = [x for x in sys.argv[1:] if not x.startswith('--')]
+CLEAN = '--clean' in sys.argv
+OUT = ARGS[0] if ARGS else 'maps_out'
+SRC = ARGS[1] if len(ARGS) > 1 else r'D:/Downloads/silent hill'
 os.makedirs(OUT, exist_ok=True)
 
 NAMES = {
@@ -114,14 +122,21 @@ def fill_by_shift(a, m):
     return best
 
 
+def source(f):
+    for cand in (f, 'imgi_1_' + f, f[1:] if f.startswith('SHOSPITAL') else None):
+        if cand and os.path.exists(os.path.join(SRC, cand + '.png')):
+            return os.path.join(SRC, cand + '.png')
+    raise FileNotFoundError(f)
+
+
 for f, name in NAMES.items():
-    hd = Image.open(os.path.join(SRC, f + '.png')).convert('RGB')
+    hd = Image.open(source(f)).convert('RGB')
     W, H = hd.size
     a = np.asarray(hd, float)
     t = tim.read_tim(f'out/TIM/{name}.TIM')
     orig, _ = tim.to_image(t, 0)
     o = np.asarray(orig.convert('RGB').resize((W, H), Image.BICUBIC), float)
-    m = watermark_mask(a)
+    m = None if CLEAN else watermark_mask(a)
     if m is not None:
         src = fill_by_shift(a, m)
         if src is not None:
@@ -131,4 +146,4 @@ for f, name in NAMES.items():
     out.save(os.path.join(OUT, name + '.TIM.png'))
     # preview of the repaired corner (display aspect)
     Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).crop((W - 330, H - 190, W, H)).save(os.path.join(OUT, 'corner_' + name + '.png'))
-    print(f, '->', name, 'watermark', 'found' if m is not None else 'NOT FOUND')
+    print(f, '->', name, 'clean source' if CLEAN else 'watermark ' + ('found' if m is not None else 'NOT FOUND'))
