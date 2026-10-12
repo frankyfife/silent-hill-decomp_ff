@@ -588,6 +588,18 @@ void PcConfig_Load(const char* path)
             /* Sky light and hand-light shadow keys (pc_sky_light.c; quick
              * options "Sky Light" and "Light Shadows"). */
         }
+        else if (strcmp(key, "footstep_volume") == 0)
+        {
+            /* Harry's footsteps, 0..1 (player_control.c Pc_FootstepSfx). */
+            extern float g_PcFootstepVolume;
+            float v = (float)atof(value);
+            g_PcFootstepVolume = (v < 0.0f) ? 0.0f : ((v > 1.0f) ? 1.0f : v);
+        }
+        else if ((strncmp(key, "anim_smooth", 11) == 0 || strcmp(key, "anim_organic") == 0) &&
+                 Pc_AnimSmooth_ParseKey(key, value))
+        {
+            /* Smoother skeletal animation (pc_anim_smooth.c). */
+        }
         else if (strncmp(key, "quick_menu_", 11) == 0)
         {
             /* Where the quick options overlay was left (pc_quick_options.c). */

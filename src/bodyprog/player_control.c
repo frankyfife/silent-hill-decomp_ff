@@ -695,6 +695,23 @@ void Player_MovementStateReset(s_SubCharacter* player, e_PlayerLowerBodyState lo
     }
 }
 
+#ifdef SH_PC_PORT
+/* footstep_volume (config, 0..1, default 0.5): Harry's own footsteps. The
+ * game's third argument is their volume (walking 0.25, running 0.5 of the
+ * effect volume; sd_call.c func_80046620 turns it back into a level), which
+ * next to the quiet ambience read far too loud. */
+float g_PcFootstepVolume = 0.5f;
+
+static void Pc_FootstepSfx(e_SfxId sfx, VECTOR3* pos, q23_8 vol, s8 pitch)
+{
+    float v = (g_PcFootstepVolume < 0.0f) ? 0.0f : ((g_PcFootstepVolume > 1.0f) ? 1.0f : g_PcFootstepVolume);
+
+    func_8005DD44(sfx, pos, (q23_8)((float)vol * v), pitch);
+}
+#else
+#define Pc_FootstepSfx func_8005DD44
+#endif
+
 bool Player_FootstepSfxPlay(s32 animStatus, s_SubCharacter* player, s32 keyframe0, s32 keyframe1, s32 sfx, s8 pitch)
 {
     if (player->model.anim.status != animStatus)
@@ -714,19 +731,19 @@ bool Player_FootstepSfxPlay(s32 animStatus, s_SubCharacter* player, s32 keyframe
                     case ANIM_STATUS(HarryAnim_SidestepLeft, true):
                     case ANIM_STATUS(HarryAnim_TurnLeft, true):
                     case ANIM_STATUS(HarryAnim_TurnRight, true):
-                        func_8005DD44(sfx, &player->position, Q8_CLAMPED(0.095f), pitch);
+                        Pc_FootstepSfx(sfx, &player->position, Q8_CLAMPED(0.095f), pitch);
                         player->properties.player.field_10C = pitch;
                         break;
 
                     default:
-                        func_8005DD44(sfx, &player->position, Q8(0.25f), pitch);
+                        Pc_FootstepSfx(sfx, &player->position, Q8(0.25f), pitch);
                         player->properties.player.field_10C = pitch + 0x10;
                         break;
                 }
             }
             else
             {
-                func_8005DD44(sfx, &player->position, Q8(0.5f), pitch);
+                Pc_FootstepSfx(sfx, &player->position, Q8(0.5f), pitch);
                 player->properties.player.field_10C = pitch + 0x40;
             }
 
@@ -751,19 +768,19 @@ bool Player_FootstepSfxPlay(s32 animStatus, s_SubCharacter* player, s32 keyframe
                     case ANIM_STATUS(HarryAnim_SidestepLeft, true):
                     case ANIM_STATUS(HarryAnim_TurnLeft, true):
                     case ANIM_STATUS(HarryAnim_TurnRight, true):
-                        func_8005DD44(sfx, &player->position, Q8_CLAMPED(0.095f), pitch);
+                        Pc_FootstepSfx(sfx, &player->position, Q8_CLAMPED(0.095f), pitch);
                         player->properties.player.field_10C = pitch;
                         break;
 
                     default:
-                        func_8005DD44(sfx, &player->position, Q8(0.25f), pitch);
+                        Pc_FootstepSfx(sfx, &player->position, Q8(0.25f), pitch);
                         player->properties.player.field_10C = pitch + 16;
                         break;
                 }
             }
             else
             {
-                func_8005DD44(sfx, &player->position, Q8(0.5f), pitch);
+                Pc_FootstepSfx(sfx, &player->position, Q8(0.5f), pitch);
                 player->properties.player.field_10C = pitch + 64;
             }
 

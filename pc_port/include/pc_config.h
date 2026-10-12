@@ -515,6 +515,10 @@ int Pc_FogShape_ParseKey(const char* key, const char* value);
  * ...). Returns 1 when the key was one of them. */
 int Pc_SkyLight_ParseKey(const char* key, const char* value);
 
+/* pc_anim_smooth.c: anim_smooth / anim_smooth_npc. Returns 1 when the key was
+ * one of them. */
+int Pc_AnimSmooth_ParseKey(const char* key, const char* value);
+
 /* Apply a flashlight mode (0..3, see flashlightMode) to the config + all PsyX
  * globals. Swaps flashlight_intensity/size between the two per-pixel styles'
  * calibrated defaults when the current value IS the other style's default

@@ -1587,6 +1587,26 @@ void Pc_ConsoleExec(const char* line)
         else if (arg[0] == '0') g_PcLighterForce = 0;
         else g_PcLighterForce = !g_PcLighterForce;
         cprintf("lighter light forced: %s", g_PcLighterForce ? "ON" : "OFF");
+    } else if (strcmp(cmd, "ANIMSMOOTH") == 0) {
+        /* animsmooth 0|1 [npc 0|1] -- smoother animation for Harry (and
+         * everyone else), pc_anim_smooth.c. */
+        extern float g_PcAnimSmooth, g_PcAnimSmoothNpc;
+        float a = -1.0f, n = -1.0f;
+        sscanf(arg, "%f %f", &a, &n);
+        if (a >= 0.0f) g_PcAnimSmooth = (a > 0.5f) ? 1.0f : 0.0f;
+        else g_PcAnimSmooth = (g_PcAnimSmooth > 0.5f) ? 0.0f : 1.0f;
+        if (n >= 0.0f) g_PcAnimSmoothNpc = (n > 0.5f) ? 1.0f : 0.0f;
+        cprintf("smooth animation: Harry %s, others %s", g_PcAnimSmooth > 0.5f ? "ON" : "OFF",
+                g_PcAnimSmoothNpc > 0.5f ? "ON" : "OFF");
+    } else if (strcmp(cmd, "ANIMORGANIC") == 0) {
+        /* animorganic <0..2> -- follow-through on Harry's locomotion
+         * (pc_anim_smooth.c); no argument toggles 0 / 1. */
+        extern float g_PcAnimOrganic;
+        if (arg[0]) g_PcAnimOrganic = (float)atof(arg);
+        else g_PcAnimOrganic = (g_PcAnimOrganic > 0.001f) ? 0.0f : 1.0f;
+        if (g_PcAnimOrganic < 0.0f) g_PcAnimOrganic = 0.0f;
+        if (g_PcAnimOrganic > 2.0f) g_PcAnimOrganic = 2.0f;
+        cprintf("organic locomotion: %.2f", g_PcAnimOrganic);
     } else if (strcmp(cmd, "FREECAMPAUSE") == 0) {
         /* freecampause 0|1 -- the free camera freezes the game (default 1). */
         extern int g_PcFreeCamPause;

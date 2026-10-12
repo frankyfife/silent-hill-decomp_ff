@@ -127,6 +127,7 @@ when it is off.
 | `freecam [0\|1]` | Free camera: mouse look, W/A/S/D, Space/C up/down, Shift fast, Ctrl slow, G fog on/off. On exterior maps it draws the whole town (all outdoor blocks, depth-sorted). |
 | `freecampause [0\|1]` | The free camera freezes the game while it flies (default `1`). Session only. |
 | `lighterforce [0\|1]` | DEBUG: light as the lighter wherever the flashlight is on (its omni light and shadow, no flame sprite), to test them outside the lighter's scene. Session only. |
+| `animsmooth [0\|1] [npc 0\|1]` | Smoother animation (spline through the keyframes, proper rotations, eased switches) for Harry, and with the second value for every other character. No argument toggles Harry. Session only; config `anim_smooth` / `anim_smooth_npc`. |
 | `freecamfog [0\|1]` | Fog in the free camera (starts off; `G` while flying). |
 | `collvis [0\|1]` | Collision visualizer panel. |
 | `fastforward [0\|1]` / `ff` | Speed the game up (the sticky toggle, not the Ctrl+F5 hold). |

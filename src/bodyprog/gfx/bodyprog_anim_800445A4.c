@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "sh_log.h"
 #include "pc_cheats.h"
+#include "pc_anim_smooth.h"
 #endif
 
 #include "bodyprog/bodyprog.h"
@@ -151,6 +152,25 @@ void Anim_BoneUpdate(s_AnmHeader* anmHdr, GsCOORDINATE2* boneCoords, s32 keyfram
     {
         activeBoneIdxs = anmHdr->activeBones;
     }
+
+#ifdef SH_PC_PORT
+    /* anim_smooth: spline through the neighbouring keys, proper rotations
+     * (pc_anim_smooth.c). Keyframes are still hit exactly. */
+    if (Pc_AnimSmoothActive(isPlayer))
+    {
+        Pc_AnimSmoothBoneUpdate(anmHdr, boneCoords, activeBoneIdxs, keyframe0, keyframe1, alpha, isPlayer);
+        Pc_AnimSmoothRange(-1, -1, 0);
+        if (isPlayer)
+        {
+            for (i = 0; i < 3; i++)
+            {
+                g_SysWork.playerBoneCoords[HarryBone_Torso].coord.t[i] = g_SysWork.playerBoneCoords[HarryBone_Hips].coord.t[i];
+            }
+        }
+        return;
+    }
+    Pc_AnimSmoothRange(-1, -1, 0);
+#endif
 
     // Skip root bone (index 0) and start processing from bone 1.
     boneCoords  = &boneCoords[1];
@@ -324,6 +344,9 @@ void Anim_PlaybackOnce(s_Model* model, s_AnmHeader* anmHdr, GsCOORDINATE2* boneC
     alpha = Q12_FRACT(newTime);
     if ((model->anim.flags & AnimFlag_Unlocked) || (model->anim.flags & AnimFlag_Visible))
     {
+#ifdef SH_PC_PORT
+        Pc_AnimSmoothRange(animInfo->startKeyframeIdx, animInfo->endKeyframeIdx, 0);
+#endif
         Anim_BoneUpdate(anmHdr, boneCoords, newKeyframeIdx, newKeyframeIdx + 1, alpha);
 #ifdef SH_PC_PORT
         Pc_BigHead_Apply(model->charaId, boneCoords);
@@ -432,6 +455,9 @@ void Anim_PlaybackLoop(s_Model* model, s_AnmHeader* anmHdr, GsCOORDINATE2* boneC
     alpha = Q12_FRACT(newTime);
     if ((model->anim.flags & AnimFlag_Unlocked) || (model->anim.flags & AnimFlag_Visible))
     {
+#ifdef SH_PC_PORT
+        Pc_AnimSmoothRange(startKeyframeIdx, endKeyframeIdx, 1);
+#endif
         Anim_BoneUpdate(anmHdr, boneCoords, newKeyframeIdx0, newKeyframeIdx1, alpha);
 #ifdef SH_PC_PORT
         Pc_BigHead_Apply(model->charaId, boneCoords);
@@ -500,7 +526,19 @@ void Anim_BlendLinear(s_Model* model, s_AnmHeader* anmHdr, GsCOORDINATE2* boneCo
     // Update skeleton.
     if ((model->anim.flags & AnimFlag_Unlocked) || (model->anim.flags & AnimFlag_Visible))
     {
+#ifdef SH_PC_PORT
+        /* anim_smooth: the switch to another animation eases in and out
+         * instead of starting and stopping at full speed. */
+        {
+            const int    isPl = boneCoords == &g_SysWork.playerBoneCoords[HarryBone_Root];
+            const q19_12 drawAlpha =
+                Pc_AnimSmoothActive(isPl) ? (q19_12)(Pc_AnimSmoothBlendEase((float)alpha / 4096.0f) * 4096.0f) : alpha;
+
+            Anim_BoneUpdate(anmHdr, boneCoords, startKeyframeIdx, endKeyframeIdx, drawAlpha);
+        }
+#else
         Anim_BoneUpdate(anmHdr, boneCoords, startKeyframeIdx, endKeyframeIdx, alpha);
+#endif
 #ifdef SH_PC_PORT
         Pc_BigHead_Apply(model->charaId, boneCoords);
 #endif

@@ -66,9 +66,9 @@ float g_PcFlShadowStrength = 0.5f;  /* flashlight_shadow_strength 0..1 */
 float g_PcFlShadowSoft     = 10.0f; /* flashlight_shadow_soft, cm 0..20: the width of its vague blur */
 float g_PcFlShadowFade     = 2.5f;  /* flashlight_shadow_fade, m 0..10 */
 float g_PcLtShadow         = 1.0f;  /* lighter_shadow */
-float g_PcLtShadowStrength = 0.35f; /* lighter_shadow_strength 0..1 */
-float g_PcLtShadowSoft     = 12.0f; /* lighter_shadow_soft, cm 0..20: here the width of its vague blur */
-float g_PcLtShadowFade     = 1.5f;  /* lighter_shadow_fade, m 0..10 */
+float g_PcLtShadowStrength = 0.6f;  /* lighter_shadow_strength 0..1 */
+float g_PcLtShadowSoft     = 6.0f;  /* lighter_shadow_soft, cm 0..20: here the width of its vague blur */
+float g_PcLtShadowFade     = 2.5f;  /* lighter_shadow_fade, m 0..10 */
 float g_PcHarryShadow      = 1.0f;  /* harry_shadow: Harry casts (every light) */
 float g_PcShadowGapFill    = 1.0f;  /* shadow_gap_fill: close the cracks between model parts, texels 0..2 */
 
@@ -93,9 +93,9 @@ static const PcSkyTunable s_pcSkyTunables[] = {
     { "flashlight_shadow_soft",     &g_PcFlShadowSoft,     10.0f, 0.0f, 20.0f },
     { "flashlight_shadow_fade",     &g_PcFlShadowFade,     2.5f, 0.0f, 10.0f },
     { "lighter_shadow",             &g_PcLtShadow,         1.0f, 0.0f, 1.0f },
-    { "lighter_shadow_strength",    &g_PcLtShadowStrength, 0.35f, 0.0f, 1.0f },
-    { "lighter_shadow_soft",        &g_PcLtShadowSoft,     12.0f, 0.0f, 20.0f },
-    { "lighter_shadow_fade",        &g_PcLtShadowFade,     1.5f, 0.0f, 10.0f },
+    { "lighter_shadow_strength",    &g_PcLtShadowStrength, 0.6f,  0.0f, 1.0f },
+    { "lighter_shadow_soft",        &g_PcLtShadowSoft,     6.0f,  0.0f, 20.0f },
+    { "lighter_shadow_fade",        &g_PcLtShadowFade,     2.5f, 0.0f, 10.0f },
     { "harry_shadow",               &g_PcHarryShadow,      1.0f, 0.0f, 1.0f },
     { "shadow_gap_fill",            &g_PcShadowGapFill,    1.0f, 0.0f, 2.0f },
 };
